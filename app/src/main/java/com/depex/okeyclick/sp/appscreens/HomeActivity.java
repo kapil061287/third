@@ -64,6 +64,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
 
         ViewProfileFragment fragment=new ViewProfileFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragement, fragment).addToBackStack(null).commit();

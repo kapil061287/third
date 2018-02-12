@@ -2,26 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <group android:id="@+id/group1" android:checkableBehavior="single">
 <item android:id="@+id/home_menu"
+    android:icon="@drawable/home_icon"
     android:title="Home"
     />
     <item android:id="@+id/public_profile_menu"
         android:title="Public Profile"
+        android:icon="@drawable/public_profile_icon"
         />
     <item android:id="@+id/service_history_menu"
+        android:icon="@drawable/service_history_icon"
         android:title="Service History" />
     <item android:id="@+id/payment_history_menu"
+        android:icon="@drawable/payment_history_icon"
         android:title="Payment History"/>
 
     <item android:id="@+id/offers_menu"
+        android:icon="@drawable/offer_icon"
         android:title="Offers"/>
     <item android:id="@+id/term_and_condition_menu"
+        android:icon="@drawable/term_and_condition_icon"
         android:title="@string/term_and_condition"/>
     <item android:id="@+id/share_with_others_menu"
+        android:icon="@drawable/share_icon"
         android:title="Share with others" />
     <item android:id="@+id/change_status_menu"
         android:title="Change Status"
         />
     <item android:id="@+id/logout_menu"
+        android:icon="@drawable/logout"
         android:title="Logout"/>
 </group>
 </menu>
