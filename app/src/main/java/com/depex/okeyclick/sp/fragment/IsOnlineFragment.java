@@ -85,7 +85,6 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       //  manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
         toolbar=getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
         toolbar.setTitle("SERVICE STATUS");
         if (ActivityCompat.checkSelfPermission(getActivity(),

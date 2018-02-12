@@ -14,16 +14,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="82dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
         android:background="#ffffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <RadioGroup
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             android:id="@+id/on_off_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,19 +32,25 @@
             <RadioButton
                 android:layout_weight="1"
                 android:id="@+id/online_radio"
+                android:layout_marginLeft="@dimen/radio_btn_margin_left"
+                android:layout_gravity="center"
+
+                android:button="@drawable/radion_button_online_drw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Online" />
+                 />
 
 
             <RadioButton
                 android:layout_weight="1"
                 android:id="@+id/off_line_radio"
+                android:layout_marginLeft="@dimen/radio_btn_margin_left"
+                android:layout_marginRight="@dimen/radio_btn_margin_right"
+                android:button="@drawable/radio_button_offline_drw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-
-                android:text="Offline" />
+                />
         </RadioGroup>
     </LinearLayout>
 

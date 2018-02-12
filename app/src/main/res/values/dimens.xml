@@ -15,5 +15,8 @@
     <dimen name="rightmargin_viewprofile">20dp</dimen>
     <dimen name="leftmargin_viewprofile">20dp</dimen>
     <dimen name="address_accept_margin">20dp</dimen>
+    <dimen name="radio_btn_margin">30dp</dimen>
+    <dimen name="radio_btn_margin_left">40dp</dimen>
+    <dimen name="radio_btn_margin_right">10dp</dimen>
 
 </resources>
