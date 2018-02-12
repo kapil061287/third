@@ -2,7 +2,6 @@ package com.depex.okeyclick.sp.fragment;
 
 import android.Manifest;
 
-import android.app.Activity;
 import android.content.Context;
 
 import android.content.Intent;
@@ -33,7 +32,7 @@ import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.appscreens.LoginScreenActivity;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
-import com.depex.okeyclick.sp.listener.CurrentLocationListener;
+
 import com.depex.okeyclick.sp.services.CurrentLocationService;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -42,7 +41,7 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
+
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
@@ -55,7 +54,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.JsonObject;
+
 
 
 import org.json.JSONException;
