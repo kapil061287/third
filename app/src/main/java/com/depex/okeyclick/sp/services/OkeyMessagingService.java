@@ -27,7 +27,7 @@ public class OkeyMessagingService extends FirebaseMessagingService {
           //  Log.i("remoteMessage", "Notification Title : "+ title);
 
           //  Log.i("remoteMessage", "Notification msg : "+remoteMessage.getNotification().getBody());
-       /* NotificationManager manager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager manager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         String channelid="notify_chennel1";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -62,6 +62,6 @@ public class OkeyMessagingService extends FirebaseMessagingService {
         builder.setContentText("You have a request from a customer !");
         Notification notification=builder.build();
         notification.flags=NotificationCompat.FLAG_AUTO_CANCEL;
-        manager.notify(0, notification);*/
+        manager.notify(0, notification);
     }
 }

@@ -1,5 +1,10 @@
 package com.depex.okeyclick.sp.services;
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -7,12 +12,15 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
+import com.depex.okeyclick.sp.appscreens.AcceptServiceActivity;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.firebase.jobdispatcher.JobParameters;
@@ -23,10 +31,15 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,7 +68,7 @@ public class CurrentLocationService extends JobService {
 
 
 
-        checkRequestfromCustomer();
+        //checkRequestfromCustomer();
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -120,9 +133,33 @@ public class CurrentLocationService extends JobService {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
                             Log.i("responseData", "NotificationAPI : "+ response.body());
-                            if(!preferences.getBoolean("isOffline", false)){
-                                checkRequestfromCustomer();
+                            String responseBody=response.body();
+                            try {
+                                JSONObject res=new JSONObject(responseBody);
+                                boolean success=res.getBoolean("successBool");
+                                if(success){
+                                    JSONObject resObj=res.getJSONObject("response");
+                                    JSONArray jsonArray=resObj.getJSONArray("List");
+                                    for(int i=0;i<jsonArray.length();i++){
+                                        JSONObject jsonObject=jsonArray.getJSONObject(i);
+                                       String task_id= jsonObject.getString("task_id");
+                                       String pref_task=preferences.getString("task_id", "0");
+                                       if(!pref_task.equals(task_id)){
+                                           preferences
+                                                   .edit()
+                                                   .putString("task_id", task_id).apply();
+                                           jsonObject.getString("notification_data");
+                                       }
+                                    }
+
+                                    if(!preferences.getBoolean("isOffline", false)){
+                                        checkRequestfromCustomer();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                Log.e("responseDataError", e.toString());
                             }
+
                         }
 
                         @Override
@@ -200,4 +237,45 @@ public class CurrentLocationService extends JobService {
     }
 
 
+public void sendNotificationToSp(String task_id, String customer_data){
+
+        String[]arr=customer_data.split(":");
+
+        Log.i("responseDataCustomer", "Customer Address : "+arr.length);
+
+        NotificationManager manager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        String channelid="notify_chennel1";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel=new NotificationChannel(channelid, "NotifyChannel", NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+        }
+
+       /* String task=dataMap.get("task_id");
+        String msg=null;
+        if(task!=null){
+            msg="You have a request from a customer !";
+        }else{
+            msg="Another Notification";
+        }
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(this, channelid);
+        builder.setSmallIcon(R.drawable.logo);
+        Intent intent=new Intent(this , AcceptServiceActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("subcategory",dataMap.get("subcategory") );
+        bundle.putString("customerName", dataMap.get("customer_name") );
+        bundle.putString("customerAddress", dataMap.get("customer_address"));
+        bundle.putString("task_id", task_id);
+        bundle.putLong("requestTime", new Date().getTime());
+        bundle.putString("customerMobile", dataMap.get("customer_mobile"));
+        intent.putExtras(bundle);
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,1, intent,  PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setContentTitle("Service Request");
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        builder.setContentText("You have a request from a customer !");
+        Notification notification=builder.build();
+        notification.flags=NotificationCompat.FLAG_AUTO_CANCEL;
+        manager.notify(0, notification);*/
+}
 }
