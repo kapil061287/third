@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fffabaff</color>
+    <color name="colorPrimaryDark">#ffc689cc</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="skip_back_color">#99438c</color>
+    <color name="spleshColor">#fddfff</color>
+
+    <color name="dark_back_text_color">#ffffffff</color>
+
+    <color name="signup_btn_color">@color/y_color</color>
+    <color name="input_floating_color">@color/skip_back_color</color>
+
+    <color name="y_color">#ff2186c4</color>
+
+</resources>

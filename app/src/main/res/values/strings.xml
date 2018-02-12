@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">OkeyClick SP</string>
+    <string name="signup_title">Service Provider Sign UP</string>
+    <string name="apikey">fbb36f24d9b3985aa86fa37fd51c29eb</string>
+    <string name="v_code">1.0</string>
+    <string name="title_activity_is_online">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="notification_chennel_id">notify_chennel1</string>
+    <string name="action_settings">Settings</string>
+    <string name="term_and_condition"><![CDATA[Term & Condition]]></string>
+    <string name="google_map_api_key">AIzaSyBMSbObw6L55ReqFc9hPNA9CNRd552HYQ8</string>
+    <string name="server_key">AIzaSyCD42eqt4BAMw-9y4sqLF0Ac6xV_ZxzOo4</string>
+</resources>

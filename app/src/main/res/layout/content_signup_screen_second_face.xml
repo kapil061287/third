@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:hint="Mobile"
+            android:id="@+id/mobile_signup"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_field_height" />
+        <EditText
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:hint="OTP"
+
+            android:visibility="gone"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:id="@+id/otp_signpu"
+            android:layout_height="@dimen/input_field_height" />
+        <Button
+            android:text="Send OTP"
+            android:id="@+id/send_otp_btn"
+            android:textColor="@color/dark_back_text_color"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:background="@color/y_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+<FrameLayout
+    android:layout_marginTop="@dimen/input_field_margin_top"
+    android:paddingLeft="@dimen/input_field_paddingLeft"
+    android:background="@drawable/input_field_back"
+    android:layout_marginRight="@dimen/right_margin_login"
+    android:layout_marginLeft="@dimen/left_margin_login"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/input_field_height">
+
+    <Spinner
+        android:id="@+id/service_spinner"
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </Spinner>
+
+</FrameLayout>
+        <FrameLayout
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:background="@drawable/input_field_back"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_field_height">
+
+    <io.apptik.widget.multiselectspinner.MultiSelectSpinner
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/sub_category_multispinner"
+        android:layout_height="wrap_content"/>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:background="@drawable/input_field_back"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_field_height">
+            <Spinner
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:id="@+id/package_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:background="@drawable/input_field_back"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_field_height">
+            <Spinner
+                android:layout_gravity="center_vertical"
+                android:id="@+id/distance_spinner"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
+        <Button
+            android:background="@color/y_color"
+            android:enabled="false"
+            android:id="@+id/register_btn_signup"
+            android:textColor="@color/dark_back_text_color"
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:text="Register as SP"
+            android:layout_marginBottom="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+
+
+
+</LinearLayout>

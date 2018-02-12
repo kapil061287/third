@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <fragment
+        android:id="@+id/map_in_accept__service_frgment"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#44000000"
+        android:elevation="10dp" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/circularProgressBar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/watch_radius_wait"
+        android:elevation="11dp"
+        app:cpb_background_progressbar_color="@color/y_color"
+        app:cpb_background_progressbar_width="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cpb_progress="50"
+        app:cpb_progressbar_color="#fff88888"
+        app:cpb_progressbar_width="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/reject_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+
+        android:layout_marginStart="0dp"
+        android:background="#ffff0000"
+        android:text="Reject"
+        android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+        android:textColor="#ffffffff"
+        android:paddingRight="20dp"
+        android:textSize="20dp"
+        android:theme="@style/AppTheme.TextInViewProfile"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/update_time_txt"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="00 : 30"
+        android:textStyle="bold"
+        android:elevation="13dp"
+        android:textColor="#ffffffff"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="0dp"
+        android:elevation="13dp"
+        android:layout_marginStart="0dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service Location"
+            android:textAllCaps="true"
+            android:id="@+id/service_name_accept"
+            android:textColor="#ffffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/service_address_accept"
+            android:layout_marginLeft="@dimen/address_accept_margin"
+            android:layout_marginRight="@dimen/address_accept_margin"
+            android:layout_height="wrap_content"
+            android:text="A-90, Sec 4 Noida Pin code-201301"
+            android:textColor="#ffffffff"
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:id="@+id/call_to_customer"
+        android:visibility="gone"
+        android:layout_marginStart="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/customer_call_btn"
+            android:background="@color/y_color"
+            android:text="Call To Customer"
+            android:textColor="#ffffffff" />
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

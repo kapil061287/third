@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<LinearLayout
+    android:paddingBottom="20dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo"
+        android:layout_width="150dp"
+        android:layout_height="70dp" />
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/input_field_margin_top"
+    android:layout_marginLeft="@dimen/left_margin_login"
+    android:layout_marginRight="@dimen/right_margin_login"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/input_field_height">
+
+    <EditText
+        android:layout_weight="1"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/input_field_back"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:layout_width="match_parent"
+        android:id="@+id/first_name_signup"
+        android:hint="First Name"
+        android:layout_height="match_parent">
+    </EditText>
+    <EditText
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/input_field_back"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:layout_width="match_parent"
+        android:id="@+id/last_name_signup"
+        android:hint="Last Name"
+
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+    </EditText>
+
+</LinearLayout>
+
+
+    <EditText
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:layout_width="match_parent"
+        android:id="@+id/email_signup"
+        android:background="@drawable/input_field_back"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:drawableRight="@drawable/ic_email_black_24dp"
+        android:paddingRight="10dp"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:hint="Email"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:layout_height="@dimen/input_field_height"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/password_signup"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:inputType="textPassword"
+        android:drawableRight="@drawable/ic_lock_outline_black_24dp"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:background="@drawable/input_field_back"
+        android:hint="Password"
+        android:layout_height="@dimen/input_field_height">
+
+    </EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/re_pass_signup"
+        android:hint="Re Type Password"
+        android:inputType="textPassword"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:drawableRight="@drawable/ic_lock_outline_black_24dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:background="@drawable/input_field_back"
+        android:layout_height="@dimen/input_field_height"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:background="@drawable/input_field_back"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:hint="Address"
+        android:id="@+id/address_signup"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_height="@dimen/input_field_height" />
+
+    <FrameLayout
+        android:padding="1dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:background="@drawable/input_field_back"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_height="wrap_content">
+    <Spinner
+        android:id="@+id/country_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_field_height"
+        />
+    </FrameLayout>
+<!--<android.support.v7.widget.CardView
+    android:background="@color/skip_back_color"
+    app:cardBackgroundColor="@color/skip_back_color"
+   android:layout_marginRight="@dimen/right_margin_login"
+    android:layout_marginLeft="@dimen/left_margin_login"
+    android:layout_width="match_parent"
+    android:layout_height="0.3sp"
+    /> -->
+
+    <FrameLayout
+        android:paddingRight="1dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:background="@drawable/input_field_back"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_height="@dimen/input_field_height">
+    <Spinner
+        android:id="@+id/state_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </FrameLayout>
+    <!--<android.support.v7.widget.CardView
+        android:background="@color/skip_back_color"
+        app:cardBackgroundColor="@color/skip_back_color"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_width="match_parent"
+        android:layout_height="0.3sp"
+        />-->
+
+    <FrameLayout
+        android:padding="1dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:background="@drawable/input_field_back"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_height="@dimen/input_field_height">
+    <Spinner
+        android:id="@+id/city_spinner"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content" />
+    </FrameLayout>
+    <!-- <android.support.v7.widget.CardView
+        android:background="@color/skip_back_color"
+        app:cardBackgroundColor="@color/skip_back_color"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_width="match_parent"
+        android:layout_height="0.3sp"
+        />-->
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/zip_signup"
+        android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:background="@drawable/input_field_back"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:hint="Zip Code/IBN No."
+        android:layout_height="@dimen/input_field_height"/>
+
+    <Button
+        android:layout_marginTop="@dimen/input_field_margin_top"
+        android:text="Next"
+        android:background="@color/signup_btn_color"
+        android:textColor="@color/dark_back_text_color"
+        android:layout_gravity="right"
+        android:id="@+id/next_signup"
+        android:paddingRight="10dp"
+        android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
+        android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+        android:layout_marginLeft="@dimen/left_margin_login"
+        android:layout_marginRight="@dimen/right_margin_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

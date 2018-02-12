@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:src="@drawable/logo"
+        android:id="@+id/profile_pic"
+        app:riv_oval="true"
+        app:riv_corner_radius="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_height="wrap_content">
+    <TextView
+        android:text="Mr. Handy"
+        android:paddingRight="10dp"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:theme="@style/AppTheme.TextInViewProfile"
+        android:id="@+id/username_view_profile_fr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_weight="1"
+        android:gravity="left"
+        android:text="Mo. 09999999999"
+        android:paddingLeft="10dp"
+        android:theme="@style/AppTheme.TextInViewProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+    <LinearLayout
+
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content">
+
+        <com.hedgehog.ratingbar.RatingBar
+            android:layout_width="0dp"
+            app:starCount="5"
+            android:clickable="true"
+            app:halfstart="true"
+            android:id="@+id/star_view_profile"
+            app:starImagePadding="0dp"
+            android:paddingRight="10dp"
+            app:starImageHeight="20dp"
+            app:starImageWidth="20dp"
+            android:layout_weight="1"
+            android:layout_margin="0dp"
+            android:gravity="right"
+            app:starFill="@mipmap/star_full"
+            app:starHalf="@mipmap/star_half"
+            app:starEmpty="@mipmap/star_empty"
+            android:layout_height="40dp">
+
+        </com.hedgehog.ratingbar.RatingBar>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:text="Price / hour"
+            android:theme="@style/AppTheme.TextInViewProfile" />
+    </LinearLayout>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+
+    android:gravity="center_horizontal"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_weight="1"
+        android:theme="@style/AppTheme.TextInViewProfile"
+        android:layout_width="0dp"
+        android:text="Service"
+        android:paddingRight="10dp"
+        android:gravity="right"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_weight="1"
+        android:theme="@style/AppTheme.TextInViewProfile"
+        android:text="Child Care"
+        android:paddingLeft="10dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+
+    <fragment
+        android:layout_marginTop="10dp"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/user_location_view_profile"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        app:cardElevation="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Last Service"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                android:theme="@style/AppTheme.TextInViewProfile2"
+                android:layout_gravity="left"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        <TextView
+            android:text="$0.00"
+            android:layout_marginRight="@dimen/rightmargin_viewprofile"
+            android:layout_weight="1"
+            android:theme="@style/AppTheme.TextInViewProfile2"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="No Service"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                android:theme="@style/AppTheme.TextInViewProfile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text=""
+                android:layout_marginRight="@dimen/rightmargin_viewprofile"
+                android:theme="@style/AppTheme.TextInViewProfile"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="No Service"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                    android:theme="@style/AppTheme.TextInViewProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="Net Earnings"
+                    android:layout_marginRight="@dimen/rightmargin_viewprofile"
+                    android:theme="@style/AppTheme.TextInViewProfile"
+                    android:gravity="right"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardElevation="2dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="horizontal"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Total Earnings"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                        android:theme="@style/AppTheme.TextInViewProfile2"
+                        android:layout_gravity="left"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="$0.00"
+                        android:layout_marginRight="@dimen/rightmargin_viewprofile"
+                        android:layout_weight="1"
+                        android:theme="@style/AppTheme.TextInViewProfile2"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="No Online"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                        android:theme="@style/AppTheme.TextInViewProfile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text=""
+                        android:layout_marginRight="@dimen/rightmargin_viewprofile"
+                        android:theme="@style/AppTheme.TextInViewProfile"
+                        android:gravity="right"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="No Service"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/leftmargin_viewprofile"
+                        android:theme="@style/AppTheme.TextInViewProfile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Estimated Net"
+                        android:layout_marginRight="@dimen/rightmargin_viewprofile"
+                        android:theme="@style/AppTheme.TextInViewProfile"
+                        android:gravity="right"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:background="@color/y_color"
+                android:text="Download Excel"
+                android:paddingLeft="10dp"
+                android:layout_weight="1"
+                android:paddingRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:drawablePadding="5dp"
+                android:textColor="#ffffffff"
+                android:drawableLeft="@drawable/ic_if_file_exel_download_1379793"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:background="@color/skip_back_color"
+                android:text="Download Excel"
+                android:paddingLeft="10dp"
+                android:layout_weight="1"
+                android:paddingRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:drawablePadding="5dp"
+                android:textColor="#ffffffff"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/ic_if_icon_70_document_file_pdf_314998"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+</LinearLayout>
