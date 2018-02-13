@@ -66,8 +66,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
 
-        <activity android:name=".appscreens.AcceptServiceActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".appscreens.AcceptServiceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".appscreens.SPTimerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            ></activity>
     </application>
 
 </manifest>

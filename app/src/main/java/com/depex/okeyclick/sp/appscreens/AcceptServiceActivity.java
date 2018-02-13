@@ -1,6 +1,7 @@
 package com.depex.okeyclick.sp.appscreens;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -239,6 +240,11 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                         serviceAddress.setVisibility(View.GONE);
                                         updateTimeText.setVisibility(View.GONE);
 
+                                        setVisibility(View.GONE, progressBar, rejectBtn, backgroundGray, serviceName, serviceAddress, updateTimeText);
+                                        setVisibility(View.VISIBLE, callToCustomerLayout);
+
+
+
 
                                         JSONObject jsonObject = res.getJSONObject("response");
                                         String customerLatitudeStr = jsonObject.getString("customer_latitude");
@@ -356,9 +362,22 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                 break;
             case R.id.customer_call_btn:
 
+                        String text=callBtn.getText().toString();
+                Log.i("responseData", "Call Btn Text  : "+text);
+                        if(text.equalsIgnoreCase("Start")){
+
+                            callBtn.setText("Arrived");
+                        }else if("Arrived".equals(text)) {
+                            spTimerStart();
+                        }
                 break;
 
         }
+    }
+
+    private void spTimerStart() {
+        Intent intent=new Intent(AcceptServiceActivity.this, SPTimerActivity.class);
+        startActivity(intent);
     }
 
     public void callTocustomer(String number){
@@ -410,5 +429,11 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
     public void setProgress(float f){
         progressBar.setProgress(f);
+    }
+
+    public void setVisibility( int visible, View... view){
+        for(View view1 : view){
+            view1.setVisibility(visible);
+        }
     }
 }

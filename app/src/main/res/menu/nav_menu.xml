@@ -27,6 +27,7 @@
         android:title="Share with others" />
     <item android:id="@+id/change_status_menu"
         android:title="Change Status"
+        android:icon="@drawable/change_status"
         />
     <item android:id="@+id/logout_menu"
         android:icon="@drawable/logout"

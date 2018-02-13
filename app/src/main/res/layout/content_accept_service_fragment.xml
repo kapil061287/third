@@ -122,6 +122,8 @@
         android:layout_marginEnd="0dp"
         android:id="@+id/call_to_customer"
         android:visibility="gone"
+        android:elevation="10dp"
+
         android:layout_marginStart="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -132,9 +134,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+            android:paddingRight="20dp"
             android:id="@+id/customer_call_btn"
             android:background="@color/y_color"
-            android:text="Call To Customer"
+            android:text="Start"
             android:textColor="#ffffffff" />
 
     </LinearLayout>
