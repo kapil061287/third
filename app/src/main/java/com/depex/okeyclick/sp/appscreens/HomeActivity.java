@@ -207,6 +207,7 @@ public class HomeActivity extends AppCompatActivity
             data.put("user_id", preferences.getString("user_id", "0"));
             data.put("DeviceToken", token);
             requestData.put("RequestData" , data);
+            Log.i("requestDataDevice","Device Token Requst : "+ requestData.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

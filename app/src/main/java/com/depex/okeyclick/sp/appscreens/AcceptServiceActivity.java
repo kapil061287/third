@@ -224,7 +224,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                         .enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                Log.i("responseCode", response.body());
+
+                                Log.i("responseCode", response.body()+"");
                                 String responseString = response.body();
                                 try {
                                     JSONObject res = new JSONObject(responseString);
