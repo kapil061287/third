@@ -119,6 +119,10 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void changeStatus(final String status){
+        if("generate".equalsIgnoreCase(status)){
+            startInvoiceActivity();
+        }
+
         JSONObject requestData2=new JSONObject();
         JSONObject data2=new JSONObject();
         try {
@@ -161,7 +165,9 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
                                 }else if (status.equalsIgnoreCase("complete")){
                                     isTimerStart=false;
                                     isInProgress=false;
+                                    timer_image.setBackgroundResource(R.drawable.progress_icon_2);
                                     myTask.cancel(true);
+                                    startJob.setText("Generate Invoice");
                                 }
                             }
                         } catch (JSONException e) {
@@ -176,6 +182,14 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
                         Log.e("responseDataError", t.toString());
                     }
                 });
+    }
+
+    private void startInvoiceActivity() {
+        Bundle bundle=new Bundle();
+        bundle.putString("task_duration", timer_text.getText().toString());
+        Intent invoiceIntent=new Intent(this, InvoiceActivity.class);
+        invoiceIntent.putExtras(bundle);
+        startActivity(invoiceIntent);
     }
 
     boolean isInProgress=true;

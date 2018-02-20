@@ -61,4 +61,9 @@ public interface ProjectAPI {
 
     @POST("running_task.php")
     Call<String> changeStatusRunningTask(@Body String body);
+
+    @POST("generate_task_invoice.php")
+    Call<String> generateTaskInvoice(@Body String body);
+
+
 }
