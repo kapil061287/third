@@ -105,6 +105,7 @@ public class LoginScreenActivity extends AppCompatActivity implements View.OnCli
                                     prefEditor.commit();
                                     Intent intent=new Intent(LoginScreenActivity.this, HomeActivity.class);
                                     startActivity(intent);
+                                    finish();
 
                                 }else{
                                     JSONObject object=jsonObject.getJSONObject("ErrorObj");

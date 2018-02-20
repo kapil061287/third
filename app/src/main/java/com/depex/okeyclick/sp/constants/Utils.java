@@ -6,7 +6,7 @@ package com.depex.okeyclick.sp.constants;
 
 public class Utils {
 
-    public static final String SITE_URL="http://depextechnologies.org/";
+    public static final String SITE_URL="http://depextechnologies.org/okey-click/api/";
     public static double lat;
     public static double lng;
 }

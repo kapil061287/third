@@ -71,6 +71,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     TextView serviceName;
     SharedPreferences preferences;
     MyTask myTask;
+    String task_id;
     TextView serviceAddress;
 
     @BindView(R.id.imageView3)
@@ -127,6 +128,17 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                AcceptServiceActivity.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15f));
+            }
+        });
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -195,10 +207,10 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.circularProgressBar:
-                Toast.makeText(this, "Hello Progress Bar ", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Hello Progress Bar ", Toast.LENGTH_LONG).show();
                 Bundle bundle = getIntent().getExtras();
-                String task_id = bundle.getString("task_id");
-
+               task_id = bundle.getString("task_id");
+               preferences.edit().putString("task_id", task_id).apply();
 
                 JSONObject requestData = new JSONObject();
                 JSONObject data = new JSONObject();
@@ -242,9 +254,6 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                                         setVisibility(View.GONE, progressBar, rejectBtn, backgroundGray, serviceName, serviceAddress, updateTimeText);
                                         setVisibility(View.VISIBLE, callToCustomerLayout);
-
-
-
 
                                         JSONObject jsonObject = res.getJSONObject("response");
                                         String customerLatitudeStr = jsonObject.getString("customer_latitude");
@@ -361,13 +370,13 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                 });
                 break;
             case R.id.customer_call_btn:
-
                         String text=callBtn.getText().toString();
                 Log.i("responseData", "Call Btn Text  : "+text);
                         if(text.equalsIgnoreCase("Start")){
+                            changeStatus("start_job_journey");
 
-                            callBtn.setText("Arrived");
                         }else if("Arrived".equals(text)) {
+                            changeStatus("reached");
                             spTimerStart();
                         }
                 break;
@@ -375,9 +384,58 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
+    public void changeStatus(String status){
+        JSONObject requestData2=new JSONObject();
+        JSONObject data2=new JSONObject();
+        try {
+            data2.put("apikey", getString(R.string.apikey));
+            data2.put("v_code", getString(R.string.v_code));
+            data2.put("sp_id", preferences.getString("user_id", "0"));
+            data2.put("task_id", task_id);
+            data2.put("task_status", status);
+            requestData2.put("RequestData", data2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new Retrofit.Builder()
+                .addConverterFactory(new StringConvertFactory())
+                .baseUrl(Utils.SITE_URL)
+                .build()
+                .create(ProjectAPI.class)
+                .changeStatusRunningTask(requestData2.toString())
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String responseString=response.body();
+                        try {
+                            JSONObject res=new JSONObject(responseString);
+                            boolean success=res.getBoolean("successBool");
+                            if(success){
+                                callBtn.setText("Arrived");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.i("responseDataChange", response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+    }
+
+
+
     private void spTimerStart() {
         Intent intent=new Intent(AcceptServiceActivity.this, SPTimerActivity.class);
+
+        intent.putExtras(getIntent().getExtras());
         startActivity(intent);
+        finish();
     }
 
     public void callTocustomer(String number){
@@ -405,7 +463,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
+           // super.onProgressUpdate(values);
             if(values.length>0) {
                 float progress_step=100.f/120.f;
                 float current_progress=progress_step*values[0];

@@ -14,10 +14,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,7 +69,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, RadioGroup.OnCheckedChangeListener, OnSuccessListener<Location>{
+public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, RadioGroup.OnCheckedChangeListener, OnSuccessListener<Location> {
     GoogleMap googleMap;
     SharedPreferences preferences;
     ProjectAPI projectAPI;
@@ -78,11 +80,12 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
     Context context;
     Toolbar toolbar;
     Marker marker;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-      //  manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        toolbar=getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
+        //  manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        toolbar = getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
         toolbar.setTitle("SERVICE STATUS");
         if (ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -91,30 +94,31 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
 
             ActivityCompat.requestPermissions(getActivity(), new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION}, 1 );
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
-       // manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-      //  manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0,this);
+        // manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        //  manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0,this);
 
 
-        LocationRequest request=new LocationRequest();
+        LocationRequest request = new LocationRequest();
 
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         request.setInterval(10000);
         request.setFastestInterval(500);
 
-        mFusedLocationclient=LocationServices.getFusedLocationProviderClient(getActivity());
-        mFusedLocationclient.requestLocationUpdates(request, new LocationCallback(){
+        mFusedLocationclient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+
+        mFusedLocationclient.requestLocationUpdates(request, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                for(Location location : locationResult.getLocations()){
+                for (Location location : locationResult.getLocations()) {
                     changeLocation(location);
                 }
             }
         }, null);
-
 
 
         View view = inflater.inflate(R.layout.content_home_fragment, container, false);
@@ -124,9 +128,9 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
         radioGroup.setOnCheckedChangeListener(this);
 
 
-        jobDispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(getActivity()));
+        jobDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getActivity()));
 
-        locationJob=jobDispatcher.newJobBuilder()
+        locationJob = jobDispatcher.newJobBuilder()
                 .setService(CurrentLocationService.class)
                 .setTag("location-job")
                 .setRecurring(false)
@@ -140,7 +144,7 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
         builder.addConverterFactory(new StringConvertFactory());
         Retrofit retrofit = builder.build();
         projectAPI = retrofit.create(ProjectAPI.class);
-       // mFusedLocationclient=LocationServices.getFusedLocationProviderClient(getActivity());
+        // mFusedLocationclient=LocationServices.getFusedLocationProviderClient(getActivity());
 
         preferences = getActivity().getSharedPreferences("service_pref", Context.MODE_PRIVATE);
         boolean isOnline = preferences.getBoolean("isOnline", false);
@@ -172,9 +176,30 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
                                         Manifest.permission.ACCESS_FINE_LOCATION}, 1 );
 
                             }
+
+        mFusedLocationclient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                String fullname=preferences.getString("fullname", "0");
+                LatLng latLng=new LatLng(location.getLatitude(), location.getLongitude());
+
+                String snippetAddress="";
+                if(IsOnlineFragment.this.googleMap!=null)
+                    marker=IsOnlineFragment.this.googleMap.addMarker(new MarkerOptions().position(latLng).title(fullname).snippet(snippetAddress).visible(true));
+
+                CameraPosition.Builder builder=new CameraPosition.Builder();
+                builder.target(latLng);
+                builder.zoom(15);
+                builder.tilt(90);
+                CameraPosition cameraPosition=builder.build();
+                //googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                if(IsOnlineFragment.this.googleMap!=null)
+                    IsOnlineFragment.this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 2000, null);
+
+            }
+        });
       //  mFusedLocationclient.getLastLocation().addOnSuccessListener(IsOnlineFragment.this);
     }
-
 
 
     @Override

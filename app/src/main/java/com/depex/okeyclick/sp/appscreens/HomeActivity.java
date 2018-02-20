@@ -47,9 +47,9 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_is_online);
 
-
+/*
         Intent intent=new Intent(this, SPTimerActivity.class);
-        startActivity(intent);
+        startActivity(intent);*/
 
 
 
