@@ -113,6 +113,8 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
                 }else if ("Finish the job".equalsIgnoreCase(startJob.getText().toString())){
                         changeStatus("complete");
 
+                }else if("Generate Invoice".equalsIgnoreCase(startJob.getText().toString())){
+                    changeStatus("generate");
                 }
                 break;
         }

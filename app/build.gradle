@@ -22,6 +22,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:0.0.6'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'io.apptik.widget:multiselectspinner:1.0.12'
@@ -44,6 +45,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/commons-validator-1.6.jar')
 }
+
 
 
 

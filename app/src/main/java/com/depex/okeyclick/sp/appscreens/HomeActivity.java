@@ -47,13 +47,9 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_is_online);
 
-/*
-        Intent intent=new Intent(this, SPTimerActivity.class);
-        startActivity(intent);*/
 
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);

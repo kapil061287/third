@@ -1,5 +1,6 @@
 package com.depex.okeyclick.sp.view;
 
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Adapter;

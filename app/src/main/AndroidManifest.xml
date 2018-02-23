@@ -73,7 +73,11 @@
             android:name=".appscreens.SPTimerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".appscreens.InvoiceActivity"></activity>
+        <activity
+            android:name=".appscreens.InvoiceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".appscreens.PaymentConfirmActivity"></activity>
     </application>
 
 </manifest>

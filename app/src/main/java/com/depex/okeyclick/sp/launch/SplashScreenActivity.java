@@ -8,6 +8,7 @@ import android.util.Log;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.appscreens.HomeActivity;
+import com.depex.okeyclick.sp.appscreens.InvoiceActivity;
 import com.depex.okeyclick.sp.appscreens.LoginScreenActivity;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
@@ -31,6 +32,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+     /*   Intent intent=new Intent(this, InvoiceActivity.class);
+        startActivity(intent);
+
+*/
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
         isLogin=preferences.getBoolean("isLogin",false);
 

@@ -18,5 +18,7 @@
     <dimen name="radio_btn_margin">30dp</dimen>
     <dimen name="radio_btn_margin_left">40dp</dimen>
     <dimen name="radio_btn_margin_right">10dp</dimen>
+    <dimen name="left_margin_in_invoice">25dp</dimen>
+    <dimen name="right_margin_in_invoice">25dp</dimen>
 
 </resources>
