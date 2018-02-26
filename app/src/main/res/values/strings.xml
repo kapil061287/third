@@ -11,4 +11,6 @@
     <string name="term_and_condition"><![CDATA[Term & Condition]]></string>
     <string name="google_map_api_key">AIzaSyBMSbObw6L55ReqFc9hPNA9CNRd552HYQ8</string>
     <string name="server_key">AIzaSyCD42eqt4BAMw-9y4sqLF0Ac6xV_ZxzOo4</string>
+    <string name="mobile">Mobile</string>
+    <string name="term_and_condition_checkbox">By proceeding , I agree that cabily or its representatives may contact me by email, phone, or SMS (including by automatic telephone dialing system ) at the email address or number I provide, including for marketing purposes. I have read and understand the relevant Service Provider Privacy Statement.</string>
 </resources>

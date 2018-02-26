@@ -21,6 +21,5 @@ public class PaymentConfirmActivity extends AppCompatActivity {
         String[]arr=new String[]{"Service\nAccepted", "On the \nWay", "Arrived to \nLocation", "Start the \nJob", "Finish \nJob"};
         stateProgressBar.setStateDescriptionData(arr);
         stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FIVE);
-
     }
 }

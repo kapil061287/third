@@ -65,7 +65,6 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sp_timer);
-
         ButterKnife.bind(this);
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
         myTask=new MyTask();
@@ -93,7 +92,6 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
         customerNameTimer.setText(customerName);
         serviceNameTimer.setText(serviceNameText);
         addressSptimer.setText(customerAddress);
-
     }
 
     @Override
@@ -192,6 +190,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
         Intent invoiceIntent=new Intent(this, InvoiceActivity.class);
         invoiceIntent.putExtras(bundle);
         startActivity(invoiceIntent);
+        finish();
     }
 
     boolean isInProgress=true;
@@ -204,7 +203,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
             while (isInProgress)
             {
                 try {
-                    Log.i("responseDataChange", "Task is running !");
+                   // Log.i("responseDataChange", "Task is running !");
                     if(isTimerStart) {
                         publishProgress(i);
                         Thread.sleep(1000);

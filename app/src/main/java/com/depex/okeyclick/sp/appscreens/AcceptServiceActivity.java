@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -22,14 +23,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -53,7 +51,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,6 +84,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     Button callBtn;
     Marker Spmarker;
 
+    @BindView(R.id.navigate_btn)
+    Button navigateBtn;
+
     LatLng customerLatlng;
     LocationCallback locationCallback;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -117,7 +117,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         progressBar.setOnClickListener(this);
         progressBar.setProgress(0);
         myTask = new MyTask();
-
+        navigateBtn.setOnClickListener(this);
 
         Bundle bundle = getIntent().getExtras();
         long time = bundle.getLong("requestTime");
@@ -171,7 +171,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             return;
         }
 
-       // fusedLocationProviderClient.requestLocationUpdates(request, locationCallback, null);
+        // fusedLocationProviderClient.requestLocationUpdates(request, locationCallback, null);
 
         serviceName.setText(serviceNameText);
         serviceAddress.setText(customerAddress);
@@ -209,8 +209,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             case R.id.circularProgressBar:
                 //Toast.makeText(this, "Hello Progress Bar ", Toast.LENGTH_LONG).show();
                 Bundle bundle = getIntent().getExtras();
-               task_id = bundle.getString("task_id");
-               preferences.edit().putString("task_id", task_id).apply();
+                task_id = bundle.getString("task_id");
+                preferences.edit().putString("task_id", task_id).apply();
 
                 JSONObject requestData = new JSONObject();
                 JSONObject data = new JSONObject();
@@ -238,7 +238,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
 
-                                Log.i("responseCode", response.body()+"");
+                                Log.i("responseCode", response.body() + "");
                                 String responseString = response.body();
                                 try {
                                     JSONObject res = new JSONObject(responseString);
@@ -251,6 +251,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                         serviceName.setVisibility(View.GONE);
                                         serviceAddress.setVisibility(View.GONE);
                                         updateTimeText.setVisibility(View.GONE);
+                                        navigateBtn.setVisibility(View.VISIBLE);
+
 
                                         setVisibility(View.GONE, progressBar, rejectBtn, backgroundGray, serviceName, serviceAddress, updateTimeText);
                                         setVisibility(View.VISIBLE, callToCustomerLayout);
@@ -276,6 +278,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                         if (ActivityCompat.checkSelfPermission(AcceptServiceActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AcceptServiceActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                             return;
                                         }
+
                                         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                                             @Override
                                             public void onSuccess(final Location location) {
@@ -295,7 +298,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                                     public void onResponse(Call<String> call, Response<String> response) {
 
                                                         String responseString = response.body();
-                                                       // Log.i("responseDataGoogle", responseString);
+                                                        // Log.i("responseDataGoogle", responseString);
                                                         try {
                                                             JSONObject googleRouteJson = new JSONObject(responseString);
                                                             JSONArray routeArray = googleRouteJson.getJSONArray("routes");
@@ -308,8 +311,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                                                                     for (int k = 0; k < stepsArray.length(); k++) {
                                                                         JSONObject jsonForPolyLine = stepsArray.getJSONObject(k);
-                                                                        JSONObject polyLine=jsonForPolyLine.getJSONObject("polyline");
-                                                                        String polyPoint=polyLine.getString("points");
+                                                                        JSONObject polyLine = jsonForPolyLine.getJSONObject("polyline");
+                                                                        String polyPoint = polyLine.getString("points");
                                                                         //Log.i("responseDataGoogle", polyPoint);
                                                                         //Toast.makeText(AcceptServiceActivity.this , polyPoint, Toast.LENGTH_LONG).show();
                                                                         List<LatLng> polyPoints = PolyUtil.decode(polyPoint);
@@ -320,17 +323,17 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                                                         Log.i("responseDataGoogle", polyPoints.toString());
 
                                                                         polyline = googleMap.addPolyline(polylineOptions);
-                                                                        if(Spmarker!=null){
+                                                                        if (Spmarker != null) {
                                                                             Spmarker.remove();
                                                                         }
 
-                                                                        MarkerOptions markerOptions=new MarkerOptions();
+                                                                        MarkerOptions markerOptions = new MarkerOptions();
                                                                         markerOptions.visible(true);
                                                                         markerOptions.title(preferences.getString("fullname", "You"));
                                                                         markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude()));
-                                                                        Spmarker=googleMap.addMarker(markerOptions);
+                                                                        Spmarker = googleMap.addMarker(markerOptions);
 
-                                                                       // Toast.makeText(AcceptServiceActivity.this, "Service Provider is add to marker", Toast.LENGTH_LONG).show();
+                                                                        // Toast.makeText(AcceptServiceActivity.this, "Service Provider is add to marker", Toast.LENGTH_LONG).show();
 
                                                                         LocationRequest request = new LocationRequest();
                                                                         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -357,31 +360,44 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                                             }
                                         });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
 
-                    }
-                });
+                            }
+                        });
                 break;
             case R.id.customer_call_btn:
-                        String text=callBtn.getText().toString();
-                Log.i("responseData", "Call Btn Text  : "+text);
-                        if(text.equalsIgnoreCase("Start")){
-                            changeStatus("start_job_journey");
+                String text = callBtn.getText().toString();
+                Log.i("responseData", "Call Btn Text  : " + text);
+                if (text.equalsIgnoreCase("Start")) {
+                    changeStatus("start_job_journey");
 
-                        }else if("Arrived".equals(text)) {
-                            changeStatus("reached");
-                            spTimerStart();
-                        }
+                } else if ("Arrived".equals(text)) {
+                    changeStatus("reached");
+                    spTimerStart();
+                }
                 break;
-
+            case R.id.navigate_btn:
+                startGoogleMapIntent();
+                break;
         }
+    }
+
+    private void startGoogleMapIntent() {
+                    double customerLat=customerLatlng.latitude;
+                    double customerLng=customerLatlng.longitude;
+
+                    String googleLocationUrl="google.navigation:q="+customerLat+","+customerLng;
+                    Uri uri=Uri.parse(googleLocationUrl);
+                    Intent mapIntent=new Intent(Intent.ACTION_VIEW, uri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
     }
 
     public void changeStatus(String status){
@@ -432,7 +448,6 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
     private void spTimerStart() {
         Intent intent=new Intent(AcceptServiceActivity.this, SPTimerActivity.class);
-
         intent.putExtras(getIntent().getExtras());
         startActivity(intent);
         finish();
@@ -460,6 +475,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             }
             return "Success";
         }
+
 
         @Override
         protected void onProgressUpdate(Integer... values) {

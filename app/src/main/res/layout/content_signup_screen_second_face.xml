@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
+    android:layout_marginTop="60dp"
     android:layout_height="match_parent">
     <LinearLayout
-        android:layout_marginTop="60dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <TextView
+            android:layout_marginTop="10dp"
+            android:text="Address Details"
+            android:textAllCaps="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <EditText
+        <!--<EditText
             android:hint="Mobile"
             android:id="@+id/mobile_signup"
             android:layout_marginRight="@dimen/right_margin_login"
@@ -20,19 +28,17 @@
             android:paddingLeft="@dimen/input_field_paddingLeft"
             android:layout_marginTop="@dimen/input_field_margin_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height" />
-        <EditText
-            android:layout_marginTop="@dimen/input_field_margin_top"
-            android:layout_width="match_parent"
-            android:hint="OTP"
+            android:layout_height="@dimen/input_field_height" />-->
 
-            android:visibility="gone"
-            android:paddingLeft="@dimen/input_field_paddingLeft"
+        <com.lamudi.phonefield.PhoneEditText
+            android:layout_width="match_parent"
+            android:id="@+id/mobile_signup"
+            android:gravity="center_vertical"
             android:layout_marginRight="@dimen/right_margin_login"
             android:layout_marginLeft="@dimen/left_margin_login"
-            android:background="@drawable/input_field_back"
-            android:id="@+id/otp_signpu"
-            android:layout_height="@dimen/input_field_height" />
+            android:layout_height="wrap_content">
+        </com.lamudi.phonefield.PhoneEditText>
+
         <Button
             android:text="Send OTP"
             android:id="@+id/send_otp_btn"
@@ -44,6 +50,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <EditText
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:hint="OTP"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:id="@+id/otp_signpu"
+            android:layout_height="@dimen/input_field_height" />
+
+
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:text="Service Details"
+            android:textAllCaps="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 <FrameLayout
     android:layout_marginTop="@dimen/input_field_margin_top"
@@ -60,7 +86,6 @@
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </Spinner>
 
 </FrameLayout>
@@ -93,7 +118,7 @@
                 android:layout_margin="5dp"
                 android:id="@+id/package_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></Spinner>
+                android:layout_height="wrap_content"/>
         </FrameLayout>
 
         <FrameLayout
@@ -103,7 +128,10 @@
             android:layout_marginRight="@dimen/right_margin_login"
             android:layout_marginLeft="@dimen/left_margin_login"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height">
+            android:layout_height="@dimen/input_field_height"
+            android:layout_marginEnd="@dimen/right_margin_login"
+            android:paddingStart="@dimen/input_field_paddingLeft"
+            android:layout_marginStart="@dimen/left_margin_login">
             <Spinner
                 android:layout_gravity="center_vertical"
                 android:id="@+id/distance_spinner"
@@ -111,23 +139,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </FrameLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:hint="Experience"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:inputType="number"
+            android:layout_height="@dimen/input_field_height" />
+
+        <EditText
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:hint="Hourly Rate"
+            android:inputType="number"
+            android:layout_height="@dimen/input_field_height" />
+        <CheckBox
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:text="@string/term_and_condition_checkbox"
+            android:layout_width="wrap_content"
+            android:gravity="top"
+            android:textSize="12dp"
+            android:id="@+id/term_condition_checkbox"
+            android:textColor="@color/term_condition_color"
+            android:layout_height="wrap_content" />
 
         <Button
             android:background="@color/y_color"
-            android:enabled="false"
             android:id="@+id/register_btn_signup"
             android:textColor="@color/dark_back_text_color"
             android:layout_marginTop="@dimen/input_field_margin_top"
             android:layout_marginLeft="@dimen/left_margin_login"
             android:layout_marginRight="@dimen/right_margin_login"
             android:text="Register as SP"
-            android:layout_marginBottom="@dimen/input_field_margin_top"
+            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
 </android.support.v4.widget.NestedScrollView>
-
-
-
 </LinearLayout>

@@ -18,7 +18,15 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/logo"
         android:layout_width="150dp"
+        android:visibility="gone"
         android:layout_height="70dp" />
+    <TextView
+        android:layout_marginTop="70dp"
+        android:text="Sign up details"
+        android:textAllCaps="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 <LinearLayout
     android:orientation="horizontal"
@@ -31,6 +39,7 @@
     <EditText
         android:layout_weight="1"
         android:layout_marginRight="5dp"
+        android:inputType="textPersonName"
         android:background="@drawable/input_field_back"
         android:paddingLeft="@dimen/input_field_paddingLeft"
         android:layout_width="match_parent"
@@ -42,10 +51,10 @@
         android:layout_marginLeft="5dp"
         android:background="@drawable/input_field_back"
         android:paddingLeft="@dimen/input_field_paddingLeft"
+        android:inputType="textPersonName"
         android:layout_width="match_parent"
         android:id="@+id/last_name_signup"
         android:hint="Last Name"
-
         android:layout_weight="1"
         android:layout_height="match_parent">
     </EditText>
@@ -57,6 +66,7 @@
         android:layout_marginTop="@dimen/input_field_margin_top"
         android:layout_width="match_parent"
         android:id="@+id/email_signup"
+        android:inputType="textEmailAddress"
         android:background="@drawable/input_field_back"
         android:layout_marginLeft="@dimen/left_margin_login"
         android:drawableRight="@drawable/ic_email_black_24dp"
@@ -96,6 +106,15 @@
         android:layout_marginRight="@dimen/right_margin_login"
         android:background="@drawable/input_field_back"
         android:layout_height="@dimen/input_field_height"/>
+
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:text="Address Details"
+        android:textAllCaps="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
     <EditText
@@ -181,6 +200,7 @@
         android:id="@+id/zip_signup"
         android:paddingLeft="@dimen/input_field_paddingLeft"
         android:layout_marginTop="@dimen/input_field_margin_top"
+        android:inputType="number"
         android:background="@drawable/input_field_back"
         android:layout_marginLeft="@dimen/left_margin_login"
         android:layout_marginRight="@dimen/right_margin_login"

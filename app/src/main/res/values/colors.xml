@@ -13,5 +13,7 @@
     <color name="input_floating_color">@color/skip_back_color</color>
 
     <color name="y_color">#ff2186c4</color>
+    <color name="term_condition_color">#7b7676</color>
+    <color name="navigation_mark">#bec2e126</color>
 
 </resources>

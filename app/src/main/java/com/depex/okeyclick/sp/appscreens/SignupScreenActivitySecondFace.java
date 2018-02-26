@@ -2,15 +2,19 @@ package com.depex.okeyclick.sp.appscreens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,6 +33,7 @@ import com.depex.okeyclick.sp.modal.SubService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.lamudi.phonefield.PhoneEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,8 +63,12 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
     Spinner distanceSpinner;
     @BindView(R.id.otp_signpu)
     EditText otp_txt;
+    /*@BindView(R.id.mobile_signup)
+    EditText mobile_txt;*/
+
     @BindView(R.id.mobile_signup)
-    EditText mobile_txt;
+    PhoneEditText mobileSignup;
+
     @BindView(R.id.send_otp_btn)
     Button send_otp_btn;
     @BindView(R.id.register_btn_signup)
@@ -67,10 +76,13 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
 
     String otpNumber;
     boolean isVerifyOTP=false;
-    boolean isSendOtp=false;
+   // boolean isSendOtp=false;
     SharedPreferences preferences;
     ProjectAPI api;
     APICallback apiCallback;
+
+    @BindView(R.id.term_condition_checkbox)
+    CheckBox termConditionCheckbox;
 
     StringBuilder subcategoriesforform=new StringBuilder();
     String tag=this.getClass().getName();
@@ -79,6 +91,17 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_screen_second_face);
         ButterKnife.bind(this);
+        mobileSignup.getEditText().setBackgroundResource(R.drawable.input_field_back);
+        mobileSignup.getEditText().getLayoutParams().height=getResources().getDimensionPixelSize(R.dimen.height_mobile_box);
+        mobileSignup.getEditText().setPadding(getResources().getDimensionPixelSize(R.dimen.input_field_paddingLeft),0,0,0);
+        mobileSignup.setHint(R.string.mobile);
+        mobileSignup.getSpinner().setBackgroundResource(R.drawable.input_field_back);
+       // mobileSignup.getSpinner().setPadding(10, 0, 0, 0);
+
+        LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) mobileSignup.getSpinner().getLayoutParams();
+        params.setMargins(0, 0, 5, 0);
+        params.height=getResources().getDimensionPixelSize(R.dimen.input_field_height);
+        mobileSignup.getSpinner().setLayoutParams(params);
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
         initSpinner();
         Retrofit.Builder builder=new Retrofit.Builder();
@@ -115,9 +138,13 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
             packages.add(pack);
 
 
-            SubServiceMultiSpinnerAdapter subServiceMultiSpinnerAdapter=new SubServiceMultiSpinnerAdapter(this, subServices);
-            subCategorySpinner.setListAdapter(subServiceMultiSpinnerAdapter).setSelectAll(true).setMinSelectedItems(1);
-
+        final ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add(0, "Select Sub Service");
+            ArrayAdapter<String> arrayAdapter1=new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice, arrayList);
+            subCategorySpinner.setListAdapter(arrayAdapter1).setSelectAll(false).setMinSelectedItems(1);
+            subCategorySpinner.setAllUncheckedText("Sub Services");
+            subCategorySpinner.setAllCheckedText("All Selected");
 
             ServiceSpinnerAdapter serviceSpinnerAdapter=new ServiceSpinnerAdapter(this, services);
             serviceSpinner.setAdapter(serviceSpinnerAdapter);
@@ -126,15 +153,16 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
             PackgeSpinnerAdpater spinnerAdpater=new PackgeSpinnerAdpater(this, packages);
             packageSpinner.setAdapter(spinnerAdpater);
 
+
             ArrayList<String> distanceList=new ArrayList<>();
             distanceList.add("Distance in Km");
             distanceList.add("5-10");
             distanceList.add("11-15");
             distanceList.add("16-20");
             distanceList.add("21-25");
-        ArrayAdapter<String>arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, distanceList);
-        distanceSpinner.setAdapter(arrayAdapter);
 
+        ArrayAdapter<String>arrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, distanceList);
+        distanceSpinner.setAdapter(arrayAdapter);
     }
 
     @Override
@@ -164,19 +192,20 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                     JsonArray subService_list=responseObj.getAsJsonArray("List");
                     SubService[]subServices_arr=gson.fromJson(subService_list, SubService[].class);
                     final ArrayList<SubService> subServices=new ArrayList<>(Arrays.asList(subServices_arr));
-                    final SubService subService=new SubService();
-                    subService.setServiceName("Sub Service");
-                    subServices.add(0, subService);
+                    //final SubService subService=new SubService();
+                    //subService.setServiceName("Sub Service");
+                   // subServices.add(0, subService);
 
                     final ArrayList<String> arrayList=new ArrayList<>();
                     for(SubService subService1 : subServices){
                         arrayList.add(subService1.getServiceName());
                     }
-                    ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,
+                    ArrayAdapter<String> arrayAdapter=new ArrayAdapter<>(this,
                             android.R.layout.simple_list_item_multiple_choice, arrayList);
 
-
                    subCategorySpinner.setListAdapter(arrayAdapter).setSelectAll(false).setMinSelectedItems(1);
+                   subCategorySpinner.setSelection(0, true);
+
 
                     subCategorySpinner.setListener(new BaseMultiSelectSpinner.MultiSpinnerListener() {
                         @Override
@@ -207,13 +236,12 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                     Log.i(tag, packages.toString());
                     PackgeSpinnerAdpater spinnerAdpater=new PackgeSpinnerAdpater(this, packages);
                     packageSpinner.setAdapter(spinnerAdpater);
-
                     break;
                 case "send_otp":
                     otp_txt.setVisibility(View.VISIBLE);
-                    send_otp_btn.setText("Verify");
+                    send_otp_btn.setText("Resend OTP");
                     otpNumber=responseObj.get("otp").getAsString();
-                    isSendOtp=true;
+                    //isSendOtp=true;
                     break;
                 case "user_register":
 
@@ -221,6 +249,7 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
             }
         }
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -232,7 +261,6 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                    Call<JsonObject> subServices=api.getSubServices(getString(R.string.apikey), service_id);
                    subServices.enqueue(apiCallback);
                    break;
-
            }
     }
 
@@ -247,28 +275,42 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send_otp_btn:
-            if(!isSendOtp){
-                Call<JsonObject> otpCall=api.getOtp(getString(R.string.apikey), mobile_txt.getText().toString());
+           // if(!isSendOtp){
+                Call<JsonObject> otpCall=api.getOtp(getString(R.string.apikey), mobileSignup.getPhoneNumber());
                 otpCall.enqueue(apiCallback);
-            }else {
+            /*}else {
                 if(otp_txt.getText().toString().equals(otpNumber)){
                     Toast.makeText(this, "Successfully Verify OTP", Toast.LENGTH_LONG).show();
                     isVerifyOTP=true;
                     registerBtn.setEnabled(true);
                     otp_txt.setVisibility(View.GONE);
                     send_otp_btn.setVisibility(View.GONE);
-                    mobile_txt.setVisibility(View.GONE);
+
                 }else {
                     Toast.makeText(this, "Invalid OTP!", Toast.LENGTH_LONG).show();
                     send_otp_btn.setText("Resend OTP");
                 }
-            }
+            }*/
             break;
 
             case R.id.register_btn_signup:
-                Toast.makeText(this, "Button Clicked ", Toast.LENGTH_LONG).show();
+               // Toast.makeText(this, "Button Clicked ", Toast.LENGTH_LONG).show();
+                if(otp_txt.getText().toString().equals(otpNumber)){
+                   // Toast.makeText(this, "Successfully Verify OTP", Toast.LENGTH_LONG).show();
+                    isVerifyOTP=true;
+                    registerBtn.setEnabled(true);
+                   // otp_txt.setVisibility(View.GONE);
+                   // send_otp_btn.setVisibility(View.GONE);
+                }else {
+                    Toast.makeText(this, "Invalid OTP!", Toast.LENGTH_LONG).show();
+                    //send_otp_btn.setText("Resend OTP");
+                }
+                if(!termConditionCheckbox.isChecked()){
+                    Toast.makeText(this, "Please Check term and condition box !", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if(isVerifyOTP){
-                    String mobile=mobile_txt.getText().toString();
+                    String mobile=mobileSignup.getPhoneNumber();
                     String service=((Service)serviceSpinner.getSelectedItem()).getId();
                     String subservices=subcategoriesforform.toString();
                     String packageID=((Package)packageSpinner.getSelectedItem()).getId();
@@ -289,12 +331,9 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                             data.put("package", packageID);
                             String dist=distance.split("-")[1];
                             data.put("distance", dist);
-
-
 /**
  * Code for register user only other responses in success method of this class of APIListener.
   */
-
                             JSONObject requestData1=new JSONObject();
                             requestData1.put("RequestData", data);
                             StringConvertFactory factory=new StringConvertFactory();
@@ -302,33 +341,37 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                                     .baseUrl(Utils.SITE_URL)
                                     .addConverterFactory(factory);
                             Retrofit retrofit=builder.build();
-                            JsonObject jsonObject=new JsonObject();
+                            //JsonObject jsonObject=new JsonObject();
 
                             Call<String> call=retrofit.create(ProjectAPI.class).signUp(requestData1.toString());
                             call.enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
                                     String body=response.body();
+                                    Log.i("responseData", "Registration Response : "+body);
                                     try {
                                         JSONObject jsonObject1=new JSONObject(body);
                                         boolean b=jsonObject1.getBoolean("successBool");
                                         if(b){
+                                            preferences.edit().clear().apply();
                                             Toast.makeText(SignupScreenActivitySecondFace.this, "Successfully Register !", Toast.LENGTH_LONG ).show();
                                             Intent intent=new Intent(SignupScreenActivitySecondFace.this, LoginScreenActivity.class);
                                             startActivity(intent);
+                                            finish();
+
                                         }else{
                                             JSONObject object=jsonObject1.getJSONObject("ErrorObj");
                                             String errorCode=object.getString("ErrorCode");
                                             if(errorCode.equals("104")){
                                                 String errorMsg=object.getString("ErrorMsg");
                                                 Toast.makeText(SignupScreenActivitySecondFace.this, errorMsg,Toast.LENGTH_LONG).show();
-                                                preferences.edit().remove("first_").commit();
+                                                preferences.edit().remove("first_").apply();
                                                 Intent intent=new Intent(SignupScreenActivitySecondFace.this, SignupScreenActivityFirstFace.class);
                                                 startActivity(intent);
                                             }
                                         }
                                     } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        Log.e("responseData", "Exception Error : "+e.toString());
                                     }
 
 

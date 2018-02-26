@@ -3,7 +3,7 @@
 
     <dimen name="left_margin_login">20dp</dimen>
     <dimen name="right_margin_login">20dp</dimen>
-    <dimen name="input_field_height">50dp</dimen>
+    <dimen name="input_field_height">45dp</dimen>
     <dimen name="input_field_paddingLeft">10dp</dimen>
     <dimen name="input_field_margin_top">10dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -20,5 +20,6 @@
     <dimen name="radio_btn_margin_right">10dp</dimen>
     <dimen name="left_margin_in_invoice">25dp</dimen>
     <dimen name="right_margin_in_invoice">25dp</dimen>
+    <dimen name="height_mobile_box">45dp</dimen>
 
 </resources>
