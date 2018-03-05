@@ -16,11 +16,9 @@ import java.util.ArrayList;
  */
 
 public class MultiChoiceSpinner extends android.support.v7.widget.AppCompatSpinner {
-
     SubServiceMultiSpinnerAdapter adapter;
     public MultiChoiceSpinner(Context context, SubServiceMultiSpinnerAdapter adapter) {
         super(context);
         this.adapter=adapter;
     }
-
 }

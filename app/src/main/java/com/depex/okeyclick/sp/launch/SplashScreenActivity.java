@@ -39,6 +39,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 */
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
         isLogin=preferences.getBoolean("isLogin",false);
+        preferences.edit().putBoolean("spOnJob", false);
 
 
         new Thread(new Runnable() {

@@ -243,5 +243,14 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="35dp" />
+        <TextView
+            android:layout_marginTop="20dp"
+            android:theme="@style/AppTheme.TextViewFont"
+            android:id="@+id/confirm_payment_txt"
+            android:visibility="gone"
+            android:textColor="@color/y_color"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

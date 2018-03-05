@@ -68,4 +68,12 @@ public interface ProjectAPI {
     @POST("send_invoice_to_customer.php")
     Call<String> sendInvoiceToCustomer(@Body String body);
 
+    @POST("get_all_taskSP.php")
+    Call<String> getServiceHistory(@Body  String body);
+
+    @POST("userDetail.php")
+    Call<String> getPublicProfile(@Query("apikey") String apikey, @Query("sp_id") String spid);
+
+    @POST("check_task_status.php")
+    Call<String> checkSpStatus(@Body String body);
 }

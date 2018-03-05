@@ -3,6 +3,7 @@ package com.depex.okeyclick.sp.appscreens;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.Random;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -54,6 +56,9 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
 
     @BindView(R.id.service_hours_txt)
     TextView serviceHours;
+
+    @BindView(R.id.confirm_payment_txt)
+    TextView confirmPaymentTxt;
 
    /* @BindView(R.id.payment_processing_fee_txt)
     TextView paymentProcessingFee;*/
@@ -176,13 +181,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
 
 
     private void sendInvoiceToCustomer(String taskDuration) {
-        // Bundle bundle=getIntent().getExtras();
-        //String taskDuration=bundle.getString("task_duration","0");
-        //for testing only !
-        /*Random random=new Random();
-        int rn=random.nextInt(3);
-        String taskDuration="0"+rn+":"+"00:00";*/
-        //end for Testing only
+
         String user_id=preferences.getString("user_id", "0");
         String task_id=preferences.getString("task_id", "0");
         String userToken=preferences.getString("userToken", "0");
@@ -213,27 +212,29 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                                 JSONObject res=new JSONObject(responseString);
                                 boolean success=res.getBoolean("successBool");
                                 if(success){
-                                    JSONObject resObj=res.getJSONObject("response");
+                                    MyTask myTask=new MyTask();
+                                    myTask.execute();
+                                    /*JSONObject resObj=res.getJSONObject("response");
                                     String baseFare=resObj.getString("base_fare");
                                     String subTotal=resObj.getString("subtotal");
                                     String total=resObj.getString("total");
-                                    String customerName=resObj.getString("cs_name");
+                                   // String customerName=resObj.getString("cs_name");
                                     String invoiceDate=resObj.getString("created_date");
                                     String cityTex=resObj.getString("city_tax")+"%";
                                     String serviceTax=resObj.getString("service_tax")+"%";
                                     String serviceHours=resObj.getString("task_WDuration");
-                                    String taskKey=resObj.getString("task_key");
+                                    String taskKey=resObj.getString("task_key");*/
 
 
-                                    basicFare.setText(baseFare);
+                                  /*  basicFare.setText(baseFare);
                                     InvoiceActivity.this.subTotal.setText(subTotal);
-                                    InvoiceActivity.this.customerName.setText(customerName);
+                                    //InvoiceActivity.this.customerName.setText(customerName);
                                     InvoiceActivity.this.cityTex.setText(cityTex);
                                     InvoiceActivity.this.totalAmount.setText("Total "+total);
                                     InvoiceActivity.this.dateInvoice.setText(invoiceDate);
                                     InvoiceActivity.this.serviceTex.setText(serviceTax);
                                     InvoiceActivity.this.serviceHours.setText(serviceHours);
-                                    InvoiceActivity.this.jobId.setText("Job ID : "+taskKey);
+                                    InvoiceActivity.this.jobId.setText("Job ID : "+taskKey);*/
                                 }
                             } catch (JSONException e) {
                                 Log.e("responseDataError", e.toString());
@@ -265,6 +266,87 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.send_btn:
                 sendInvoiceToCustomer(taskDuration);
                 break;
+        }
+    }
+    String confirmPayment;
+
+    private void checkServiceProviderRunningStatus() {
+
+        JSONObject requestData=new JSONObject();
+        JSONObject data=new JSONObject();
+
+        try {
+            data.put("v_code", getString(R.string.v_code));
+            data.put("apikey", getString(R.string.apikey));
+            data.put("user_id", preferences.getString("user_id", "0"));
+            data.put("task_id", preferences.getString("task_id", "0"));
+            requestData.put("RequestData", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        new Retrofit.Builder()
+                .baseUrl(Utils.SITE_URL)
+                .addConverterFactory(new StringConvertFactory())
+                .build()
+                .create(ProjectAPI.class)
+                .checkSpStatus(requestData.toString())
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String responseString =response.body();
+                        if(responseString==null){
+                            return;
+                        }
+                        Log.i("responseDataRunning", responseString+"" );
+                        try {
+                            JSONObject res=new JSONObject(responseString);
+                            boolean success=res.getBoolean("successBool");
+                            if(success){
+                                JSONObject resObj=res.getJSONObject("response");
+                                int task_status=resObj.getInt("task_status");
+
+                                JSONObject spData=resObj.getJSONObject("sp_Data");
+                                String firstName=spData.getString("first_name");
+
+                                //String serviceName
+
+                            if(task_status!=8){
+                                checkServiceProviderRunningStatus();
+                            }else {
+                                confirmPayment="Payment Confirm";
+                                confirmPaymentTxt.setText("Payment Confirmed");
+                                confirmPaymentTxt.setVisibility(View.VISIBLE);
+                                sendBtn.setVisibility(View.GONE);
+                            }
+                            }
+                        } catch (JSONException e) {
+                            Log.e("responseDataError", e.toString());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.i("responseDataError", t.toString());
+                    }
+                });
+    }
+
+    class MyTask extends AsyncTask<String, String ,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            checkServiceProviderRunningStatus();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
     }
 }

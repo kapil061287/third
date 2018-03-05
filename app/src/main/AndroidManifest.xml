@@ -77,7 +77,11 @@
             android:name=".appscreens.InvoiceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".appscreens.PaymentConfirmActivity"></activity>
+        <activity android:name=".appscreens.PaymentConfirmActivity" />
+        <activity
+            android:name=".appscreens.ServiceHistoryActivity"
+            android:label="@string/title_activity_service_history"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

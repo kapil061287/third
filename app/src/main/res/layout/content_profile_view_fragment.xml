@@ -285,7 +285,7 @@
 
             <Button
                 android:background="@color/skip_back_color"
-                android:text="Download Excel"
+                android:text="Download PDF"
                 android:paddingLeft="10dp"
                 android:layout_weight="1"
                 android:paddingRight="10dp"

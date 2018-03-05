@@ -48,12 +48,11 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_is_online);
 
 
-
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
-
+        preferences.edit().putBoolean("isInHome", true).apply();
         String token=preferences.getString("deviceToken", "0");
         String tokenString=FirebaseInstanceId.getInstance().getToken();
         Log.i("tokenR", tokenString);
@@ -177,12 +176,20 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();*/
                 break;
+            case R.id.service_history_menu:
+                startServiceHistoryActivity();
+                break;
         }
 
 
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startServiceHistoryActivity() {
+        Intent intent=new Intent(this, ServiceHistoryActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -234,5 +241,12 @@ public class HomeActivity extends AppCompatActivity
                     Log.i("responseError", t.toString());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        preferences.edit().putBoolean("isInHome", false).apply();
+        preferences.edit().putBoolean("spOnJob", false).apply();
     }
 }

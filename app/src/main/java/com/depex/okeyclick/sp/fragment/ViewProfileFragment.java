@@ -78,7 +78,6 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}
                     , 1);
 
-
             return;
         }
 
@@ -97,9 +96,10 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
                 CircleOptions circleOptions=new CircleOptions();
                 circleOptions.center(latLng);
                 circleOptions.clickable(true);
-                circleOptions.radius(5000);
+                circleOptions.radius(500);
                 circleOptions.visible(true);
                 circleOptions.strokeColor(Color.RED);
+
 
                 ViewProfileFragment.this.googleMap.addCircle(circleOptions);
                 CameraUpdate cameraUpdate=CameraUpdateFactory.newLatLng(latLng);
@@ -107,7 +107,6 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
 
             }
         });
-
     }
 
     @Override
@@ -116,10 +115,7 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
             case 1 :
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_DENIED){
 
-
-
                 }else {
-
                 }
                 break;
         }

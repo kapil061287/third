@@ -239,8 +239,9 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
                             JSONObject object1=res.getJSONObject("response");
                             String status=object1.getString("isonline");
                             if(status.equals("on")){
-                                preferences.edit().putBoolean("isOnline" ,true).commit();
+                                preferences.edit().putBoolean("isOnline" ,true).apply();
                                 toolbar.setTitle("ONLINE");
+
                                 /**
                                  * start job service .......
                                  */
@@ -249,7 +250,7 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
 
 
                             }else if(status.equals("off")){
-                                preferences.edit().putBoolean("isOnline", false).commit();
+                                preferences.edit().putBoolean("isOnline", false).apply();
                                 jobDispatcher.schedule(locationJob);
                                 toolbar.setTitle("OFFLINE");
                             }
@@ -334,6 +335,7 @@ public class IsOnlineFragment extends Fragment implements OnMapReadyCallback, Ra
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 2000, null);
 
     }
+
 
     @Override
     public void onAttach(Context context) {

@@ -3,8 +3,10 @@ package com.depex.okeyclick.sp.appscreens;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
-import android.os.CountDownTimer;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,9 +24,12 @@ import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +64,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
 
     MyTask myTask;
 
+
     private boolean isTimerStart=false;
 
     @Override
@@ -89,6 +95,22 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
         String customerMobile = bundle.getString("customerMobile");
         String customerAddress = bundle.getString("customerAddress");
         String serviceNameText = bundle.getString("subcategory");
+        double custLat=bundle.getDouble("lat");
+        double custLng =bundle.getDouble("lng");
+
+        Geocoder geocoder=new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses=geocoder.getFromLocation(custLat, custLng, 0);
+            if(addresses.size()>0) {
+                Address address=addresses.get(0);
+                String addressLine=address.getAddressLine(0);
+                customerAddress=addressLine;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         customerNameTimer.setText(customerName);
         serviceNameTimer.setText(serviceNameText);
         addressSptimer.setText(customerAddress);
@@ -105,7 +127,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.start_job:
-                if("Start the job".equalsIgnoreCase(startJob.getText().toString())){
+                if("Start Job".equalsIgnoreCase(startJob.getText().toString())){
                         changeStatus("start");
 
                 }else if ("Finish the job".equalsIgnoreCase(startJob.getText().toString())){
@@ -163,6 +185,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
 
 
                                 }else if (status.equalsIgnoreCase("complete")){
+                                    preferences.edit().putBoolean("spOnJob",false).apply();
                                     isTimerStart=false;
                                     isInProgress=false;
                                     timer_image.setBackgroundResource(R.drawable.progress_icon_2);
@@ -199,6 +222,16 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         protected Integer doInBackground(Integer... integers) {
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    startJob.setEnabled(true);
+                    startJob.setText("Start Job");
+                }
+            });
+
             int i=1;
             while (isInProgress)
             {
@@ -212,7 +245,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
                     }
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+
                 }
             }
             return null;

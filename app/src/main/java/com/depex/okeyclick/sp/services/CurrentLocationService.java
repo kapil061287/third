@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 
 import android.util.Log;
+import android.view.View;
 
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
@@ -276,4 +277,68 @@ public void sendNotificationToSp(String task_id, String customer_data){
         notification.flags=NotificationCompat.FLAG_AUTO_CANCEL;
         manager.notify(0, notification);*/
 }
+
+    private void checkServiceProviderRunningStatus() {
+
+        JSONObject requestData=new JSONObject();
+        JSONObject data=new JSONObject();
+
+        try {
+            data.put("v_code", getString(R.string.v_code));
+            data.put("apikey", getString(R.string.apikey));
+            data.put("user_id", preferences.getString("user_id", "0"));
+            data.put("task_id", preferences.getString("task_id", "0"));
+            requestData.put("RequestData", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        new Retrofit.Builder()
+                .baseUrl(Utils.SITE_URL)
+                .addConverterFactory(new StringConvertFactory())
+                .build()
+                .create(ProjectAPI.class)
+                .checkSpStatus(requestData.toString())
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String responseString =response.body();
+                        if(responseString==null){
+                            return;
+                        }
+                        Log.i("responseDataRunning", responseString+"" );
+                        try {
+                            JSONObject res=new JSONObject(responseString);
+                            boolean success=res.getBoolean("successBool");
+                            if(success){
+                                JSONObject resObj=res.getJSONObject("response");
+                                int task_status=resObj.getInt("task_status");
+
+                                JSONObject spData=resObj.getJSONObject("sp_Data");
+                                String firstName=spData.getString("first_name");
+
+                                //String serviceName
+
+                                if(task_status!=1){
+                                    checkServiceProviderRunningStatus();
+                                }else {
+
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Log.e("responseDataError", e.toString());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.i("responseDataError", t.toString());
+                    }
+                });
+    }
+
 }

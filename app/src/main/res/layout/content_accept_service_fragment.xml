@@ -27,6 +27,7 @@
         android:id="@+id/map_in_accept__service_frgment"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
+
         android:layout_height="match_parent"/>
 
 
@@ -34,7 +35,7 @@
         android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#44000000"
+        android:background="#44ffffff"
         android:elevation="10dp" />
 
     <com.mikhaellopez.circularprogressbar.CircularProgressBar

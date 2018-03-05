@@ -102,8 +102,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         serviceAddress = findViewById(R.id.service_address_accept);
         preferences = getSharedPreferences("service_pref", MODE_PRIVATE);
 
-
         ButterKnife.bind(this);
+        rejectBtn.setOnClickListener(this);
         callBtn.setOnClickListener(this);
         //View view = inflater.inflate(R.layout.content_accept_service_fragment, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_in_accept__service_frgment);
@@ -252,6 +252,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                         serviceAddress.setVisibility(View.GONE);
                                         updateTimeText.setVisibility(View.GONE);
                                         navigateBtn.setVisibility(View.VISIBLE);
+                                        preferences.edit().putBoolean("spOnJob", true).apply();
 
 
                                         setVisibility(View.GONE, progressBar, rejectBtn, backgroundGray, serviceName, serviceAddress, updateTimeText);
@@ -386,6 +387,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             case R.id.navigate_btn:
                 startGoogleMapIntent();
                 break;
+            case R.id.reject_btn:
+                super.onBackPressed();
+                break;
         }
     }
 
@@ -439,7 +443,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-
+                            Log.e("responseData", "Change Status AcceptServiceActivity : "+t.toString());
                     }
                 });
     }
@@ -448,7 +452,10 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
     private void spTimerStart() {
         Intent intent=new Intent(AcceptServiceActivity.this, SPTimerActivity.class);
-        intent.putExtras(getIntent().getExtras());
+        Bundle bundle=getIntent().getExtras();
+        bundle.putDouble("lat", customerLatlng.latitude);
+        bundle.putDouble("lng", customerLatlng.longitude);
+        intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }
@@ -509,5 +516,11 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         for(View view1 : view){
             view1.setVisibility(visible);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myTask.cancel(true);
     }
 }

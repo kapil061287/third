@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
+    android:layout_marginTop="10dp"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -15,6 +16,7 @@
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="100dp"
             app:riv_oval="true"
+            android:id="@+id/profile_pic_public_p"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/logo"
             app:riv_corner_radius="20dp"
@@ -27,6 +29,7 @@
 
         <TextView
             android:text="Mr. Handy"
+            android:id="@+id/public_profile_name"
             android:gravity="right"
             android:textSize="19dp"
             android:textStyle="bold"
@@ -56,6 +59,7 @@
 
                 <TextView
                     android:text="$10"
+                    android:id="@+id/public_profile_per_hour_rate"
                     android:paddingLeft="10dp"
                     android:theme="@style/AppTheme.TextInViewProfile"
                     android:layout_weight="1"
@@ -82,9 +86,9 @@
                 android:theme="@style/AppTheme.TextInViewProfile"
                 android:layout_width="0dp"
                 android:text="12 Years"
+                android:id="@+id/public_profile_exp"
                 android:paddingLeft="10dp"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
 
 
@@ -96,7 +100,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Profile Status :"
+                android:text="Package :"
                 android:paddingRight="10dp"
                 android:gravity="right"
                 android:layout_weight="1"
@@ -105,6 +109,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:layout_weight="1"
+                android:id="@+id/public_profile_package"
                 android:theme="@style/AppTheme.TextInViewProfile"
                 android:layout_width="0dp"
                 android:text="Premium"
@@ -113,7 +118,29 @@
 
 
 
+
         </LinearLayout>
+
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/public_profile_category"
+            android:theme="@style/AppTheme.TextInViewProfile"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginLeft="30dp"
+            android:id="@+id/public_profile_sub_category_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+
 
         <TextView
             android:text="About:"
@@ -122,6 +149,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:layout_marginLeft="30dp"
+            android:id="@+id/public_profile_about"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

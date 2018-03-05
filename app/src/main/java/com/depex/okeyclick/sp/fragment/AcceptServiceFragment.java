@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.depex.okeyclick.sp.R;
@@ -19,12 +20,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import butterknife.BindView;
+
 public class AcceptServiceFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     CircularProgressBar progressBar;
     Context context;
     TextView updateTimeText;
     GoogleMap googleMap;
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,6 +39,7 @@ public class AcceptServiceFragment extends Fragment implements OnMapReadyCallbac
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mapFragment.getView().setElevation(2);
         }
+
         updateTimeText=view.findViewById(R.id.update_time_txt);
         Typeface typeface=Typeface.createFromAsset(context.getAssets(), "fonts/digital.ttf");
         updateTimeText.setTypeface(typeface);
@@ -66,7 +73,6 @@ public class AcceptServiceFragment extends Fragment implements OnMapReadyCallbac
         int updateTimeValue=0;
         @Override
         protected String doInBackground(Integer... integers) {
-
             for (int i=integers[0];i<=120;i++){
                 try {
                     Thread.sleep(250);
@@ -83,7 +89,6 @@ public class AcceptServiceFragment extends Fragment implements OnMapReadyCallbac
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-
             if(values.length>0) {
                 float progress_step=100.f/120.f;
                 float current_progress=progress_step*values[0];

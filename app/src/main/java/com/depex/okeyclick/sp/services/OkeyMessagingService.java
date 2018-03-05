@@ -40,7 +40,13 @@ public class OkeyMessagingService extends FirebaseMessagingService {
             Log.i("remoteMessage", "Message Data Payload : "+remoteMessage.getData());
             this.remoteMessage=remoteMessage;
             if("create_request".equalsIgnoreCase(remoteMessage.getData().get("notification_type"))){
-                sendNotificationForAcceptRequest();
+                if(preferences.getBoolean("isInHome", false)){
+                    Intent intent=createIntentForAcceptRequest(remoteMessage.getData());
+                    startActivity(intent);
+                }else if (!preferences.getBoolean("spOnJob", false)){
+                    sendNotificationForAcceptRequest();
+                }
+                //sendNotificationForAcceptRequest();
             }else if ("payment_process".equalsIgnoreCase(remoteMessage.getData().get("notification_type"))){
                 Bundle bundle=createBundleFromMap(remoteMessage.getData());
                 Intent paymentConfirmIntent =createIntentFromBundle(bundle, PaymentConfirmActivity.class);
@@ -60,6 +66,19 @@ public class OkeyMessagingService extends FirebaseMessagingService {
 
           //  Log.i("remoteMessage", "Notification msg : "+remoteMessage.getNotification().getBody());
 
+    }
+
+    public Intent createIntentForAcceptRequest(Map<String, String> dataMap){
+        Intent intent=new Intent(this , AcceptServiceActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("subcategory",dataMap.get("subcategory") );
+        bundle.putString("customerName", dataMap.get("customer_name") );
+        bundle.putString("customerAddress", dataMap.get("customer_address"));
+        bundle.putString("task_id", dataMap.get("task_id"));
+        bundle.putLong("requestTime", new Date().getTime());
+        bundle.putString("customerMobile", dataMap.get("customer_mobile"));
+        intent.putExtras(bundle);
+        return intent;
     }
 
     private void sendNotificationForConfirmPayment(Intent forPendingIntent) {
