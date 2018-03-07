@@ -1,18 +1,25 @@
 package com.depex.okeyclick.sp.appscreens;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,11 +30,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
+import com.depex.okeyclick.sp.services.IsTaskCancelService;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -92,6 +106,10 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     FusedLocationProviderClient fusedLocationProviderClient;
 
     String customerMobile;
+    FirebaseJobDispatcher dispatcher;
+    Job isCanceljob;
+    private String acceptRequestStr="not_accept";
+    MediaPlayer player;
 
     @Nullable
     @Override
@@ -101,6 +119,24 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         serviceName = findViewById(R.id.service_name_accept);
         serviceAddress = findViewById(R.id.service_address_accept);
         preferences = getSharedPreferences("service_pref", MODE_PRIVATE);
+        dispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+        player=MediaPlayer.create(this, R.raw.beep);
+
+
+        //create job here
+        isCanceljob=dispatcher.newJobBuilder()
+                .setService(IsTaskCancelService.class)
+                .setTag("is-task-cancel")
+                .setRecurring(false)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.NOW)
+                .setReplaceCurrent(true)
+                .build();
+        IntentFilter filter=new IntentFilter(Utils.CANCEL_ACTION);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(myBroadCastReciever, filter);
+
 
         ButterKnife.bind(this);
         rejectBtn.setOnClickListener(this);
@@ -129,12 +165,16 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
+                if(googleMap!=null)
                 AcceptServiceActivity.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15f));
             }
         });
@@ -142,7 +182,6 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
                 List<Location> locations = locationResult.getLocations();
 
                 for (int i = 0; i < locations.size(); i++) {
@@ -223,9 +262,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                     requestData.put("RequestData", data);
                     Log.i("requestData", requestData.toString());
 
-
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("responseDataError", "Accept Request : "+e.toString());
                 }
 
                 final Retrofit.Builder builder = new Retrofit.Builder();
@@ -237,13 +275,16 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                         .enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-
                                 Log.i("responseCode", response.body() + "");
                                 String responseString = response.body();
                                 try {
                                     JSONObject res = new JSONObject(responseString);
                                     boolean success = res.getBoolean("successBool");
                                     if (success) {
+                                        acceptRequestStr="accept";
+                                        preferences.edit().putBoolean("canCancel", true).apply();
+                                        dispatcher.schedule(isCanceljob);
+
                                         progressBar.setVisibility(View.GONE);
                                         rejectBtn.setVisibility(View.GONE);
                                         backgroundGray.setVisibility(View.GONE);
@@ -276,7 +317,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                         googleMap.addMarker(options);
                                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(customerLatlng));
 
-                                        if (ActivityCompat.checkSelfPermission(AcceptServiceActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AcceptServiceActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        if (ActivityCompat.checkSelfPermission(AcceptServiceActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                                                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AcceptServiceActivity.this,
+                                                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                             return;
                                         }
 
@@ -369,7 +412,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
-
+                                    Log.e("responseDataError", "Accept Request : "+t.toString());
                             }
                         });
                 break;
@@ -381,7 +424,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                 } else if ("Arrived".equals(text)) {
                     changeStatus("reached");
-                    spTimerStart();
+
                 }
                 break;
             case R.id.navigate_btn:
@@ -392,6 +435,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                 break;
         }
     }
+
 
     private void startGoogleMapIntent() {
                     double customerLat=customerLatlng.latitude;
@@ -404,7 +448,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                     startActivity(mapIntent);
     }
 
-    public void changeStatus(String status){
+
+    public void changeStatus(final String status){
         JSONObject requestData2=new JSONObject();
         JSONObject data2=new JSONObject();
         try {
@@ -433,6 +478,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                             boolean success=res.getBoolean("successBool");
                             if(success){
                                 callBtn.setText("Arrived");
+                                if(status.equalsIgnoreCase("reached")){
+                                    spTimerStart();
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -443,6 +491,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
+                        changeStatus(status);
                             Log.e("responseData", "Change Status AcceptServiceActivity : "+t.toString());
                     }
                 });
@@ -456,20 +505,22 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         bundle.putDouble("lat", customerLatlng.latitude);
         bundle.putDouble("lng", customerLatlng.longitude);
         intent.putExtras(bundle);
+        preferences.edit().putBoolean("canCancel", false).apply();
         startActivity(intent);
+
+        dispatcher.cancel("is-task-cancel");
         finish();
     }
 
-    public void callTocustomer(String number){
+    /*public void callTocustomer(String number){
 
-    }
+    }*/
 
     private class MyTask extends AsyncTask<Integer, Integer, String> {
         boolean isIncrease;
         int updateTimeValue=0;
         @Override
         protected String doInBackground(Integer... integers) {
-
             for (int i=integers[0];i<=120;i++){
                 try {
                     Thread.sleep(250);
@@ -480,7 +531,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                     e.printStackTrace();
                 }
             }
-            return "Success";
+            return acceptRequestStr;
         }
 
 
@@ -488,22 +539,48 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         protected void onProgressUpdate(Integer... values) {
            // super.onProgressUpdate(values);
             if(values.length>0) {
+                player.stop();
                 float progress_step=100.f/120.f;
                 float current_progress=progress_step*values[0];
                 ViewGroup.LayoutParams params=progressBar.getLayoutParams();
                 ConstraintLayout.LayoutParams params1= (ConstraintLayout.LayoutParams) params;
                 setProgress(current_progress);
-                if(values[0]%4==0){
-                    int updateTime=30-updateTimeValue;
-                    if(updateTime>-1) {
-                        if (updateTime < 10) {
-                            updateTimeText.setText("00 : 0" + updateTime);
-                        } else {
-                            updateTimeText.setText("00 : " + updateTime);
+                if(values[0]%4==0) {
+                    int updateTime = 30 - updateTimeValue;
+                    if (updateTime > -1) {
+                        try {
+                            if (updateTime < 10) {
+
+                                player.prepare();
+                                player.start();
+
+                                updateTimeText.setText("00 : 0" + updateTime);
+                            } else {
+                                player.prepare();
+                                player.start();
+                                updateTimeText.setText("00 : " + updateTime);
+                            }
+                        } catch (Exception e) {
+                                Log.e("responseDataError", "Player Error : "+e.toString());
                         }
+                        updateTimeValue++;
                     }
-                    updateTimeValue++;
                 }
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s!=null) {
+                if (s.equalsIgnoreCase("accept")){
+                        player.stop();
+                }else if(s.equalsIgnoreCase("not_accept")){
+                    player.stop();
+                    Toast.makeText(AcceptServiceActivity.this, "Sorry you missed the job ", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+
             }
         }
     }
@@ -521,6 +598,31 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        player.stop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadCastReciever);
         myTask.cancel(true);
     }
+
+
+    BroadcastReceiver myBroadCastReciever=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+                String action=intent.getAction();
+                if(action.equalsIgnoreCase(Utils.CANCEL_ACTION)){
+                    new AlertDialog.Builder(AcceptServiceActivity.this)
+                            .setTitle("Cancel Request")
+                            .setMessage("Customer cancel your request sorry for inconvenience")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent1=new Intent(AcceptServiceActivity.this, HomeActivity.class);
+                                    startActivity(intent1);
+                                    finish();
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+        }
+    };
 }

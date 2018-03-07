@@ -13,14 +13,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 
-
+import com.depex.okeyclick.sp.GlideApp;
 import com.depex.okeyclick.sp.R;
+import com.depex.okeyclick.sp.api.ProjectAPI;
+import com.depex.okeyclick.sp.constants.Utils;
+import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,6 +40,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.hedgehog.ratingbar.RatingBar;
+import com.makeramen.roundedimageview.RoundedImageView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import butterknife.BindInt;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class ViewProfileFragment extends Fragment implements OnMapReadyCallback {
@@ -45,10 +63,59 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
     GoogleMap googleMap;
     Marker marker;
 
+    @BindView(R.id.profile_pic)
+    RoundedImageView profilePic;
+
+    @BindView(R.id.username_view_profile_fr)
+    TextView userNameViewProfile;
+
+    @BindView(R.id.mobile_view_profile)
+    TextView mobileViewProfile;
+
+    @BindView(R.id.star_view_profile)
+    RatingBar starViewProfile;
+
+    @BindView(R.id.price_per_hour)
+    TextView pricePerHour;
+
+    @BindView(R.id.service_view_profile)
+    TextView serviceViewProfile;
+
+    @BindView(R.id.net_earning)
+    TextView netEarning;
+
+    @BindView(R.id.service_1_view_profile)
+    TextView service1ViewProfile;
+
+    @BindView(R.id.service_2_view_profile)
+    TextView service2ViewProfile;
+
+    @BindView(R.id.total_earning_view_profile)
+    TextView totalEarningViewProfile;
+
+    @BindView(R.id.no_online_view_profile)
+    TextView noOnlineViewProfile;
+
+    @BindView(R.id.no_service_view_profile)
+    TextView noServiceViewProfile;
+
+    @BindView(R.id.estimated_net_view_profile)
+    TextView estimatedNetViewProfile;
+
+    @BindView(R.id.download_excel)
+    Button downloadExcel;
+
+    @BindView(R.id.download_pdf)
+    Button downloadPdf;
+
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_profile_view_fragment, container, false);
+        ButterKnife.bind(this, view);
         Toolbar toolbar=getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
         toolbar.setTitle("HOME");
         preferences = context.getSharedPreferences("service_pref", Context.MODE_PRIVATE);
@@ -58,8 +125,54 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.user_location_view_profile);
         mapFragment.getMapAsync(this);
         ratingBar.setStar(4);
-
+        initProfile();
         return view;
+    }
+
+    private void initProfile() {
+            new Retrofit.Builder()
+                    .baseUrl(Utils.SITE_URL)
+                    .addConverterFactory(new StringConvertFactory())
+                    .build()
+                    .create(ProjectAPI.class)
+                    .getPublicProfile(getString(R.string.apikey), preferences.getString("user_id", "0"))
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            String responseString=response.body();
+                            Log.i("responseData", "View Profile : "+responseString+"");
+                            try {
+                                JSONObject res=new JSONObject(responseString);
+                                boolean success=res.getBoolean("successBool");
+                                if(success){
+                                    JSONObject resObj=res.getJSONObject("response");
+                                    JSONArray resArr=resObj.getJSONArray("List");
+                                    JSONObject spData=resArr.getJSONObject(0);
+                                    String totalEarning=spData.getString("total_earning");
+                                    String lastEarning=spData.getString("last_earning");
+                                    totalEarningViewProfile.setText(totalEarning+"$");
+                                    netEarning.setText(lastEarning+"$");
+                                    GlideApp.with(context).load(spData.getString("user_images")).into(profilePic);
+                                    serviceViewProfile.setText(spData.getString("category"));
+                                    mobileViewProfile.setText(spData.getString("mobile"));
+                                    userNameViewProfile.setText("Mr. "+spData.getString("first_name")+" "+spData.getString("last_name"));
+                                    pricePerHour.setText(spData.getString("pac_price_per_hr")+"$ / hour");
+                                    float rating= (float) spData.getDouble("rating");
+                                    starViewProfile.setStar(3.4f);
+
+                                }
+                            } catch (JSONException e) {
+                               Log.e("responseDataError","View Profile Error: "+ e.toString());
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            initProfile();
+                                Log.e("responseDataError", "View Profile Error : "+t.toString());
+                        }
+                    });
     }
 
     @Override

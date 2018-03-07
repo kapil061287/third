@@ -183,7 +183,7 @@ public class CurrentLocationService extends JobService {
     }
 
 
-    public void changeLocation(Location location) {
+    public void changeLocation(final Location location) {
         Log.i("currentLocationApi", location.toString());
             double lat=location.getLatitude();
             double lng=location.getLongitude();
@@ -218,11 +218,12 @@ public class CurrentLocationService extends JobService {
 
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Log.i("responseData", response.body());
+                        Log.i("responseData","Current Loction Service : "+response.body());
                     }
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
+                        changeLocation(location);
                         Log.i("responseData", t.toString());
                     }
 

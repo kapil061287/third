@@ -42,6 +42,7 @@ public class OkeyMessagingService extends FirebaseMessagingService {
             if("create_request".equalsIgnoreCase(remoteMessage.getData().get("notification_type"))){
                 if(preferences.getBoolean("isInHome", false)){
                     Intent intent=createIntentForAcceptRequest(remoteMessage.getData());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }else if (!preferences.getBoolean("spOnJob", false)){
                     sendNotificationForAcceptRequest();
@@ -50,6 +51,7 @@ public class OkeyMessagingService extends FirebaseMessagingService {
             }else if ("payment_process".equalsIgnoreCase(remoteMessage.getData().get("notification_type"))){
                 Bundle bundle=createBundleFromMap(remoteMessage.getData());
                 Intent paymentConfirmIntent =createIntentFromBundle(bundle, PaymentConfirmActivity.class);
+                paymentConfirmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 if(preferences.getBoolean("isInInvoice", false)){
                     startActivity(paymentConfirmIntent);
@@ -58,14 +60,11 @@ public class OkeyMessagingService extends FirebaseMessagingService {
                 }
             }
 
-
-
            // String title=remoteMessage.getNotification().getTitle();
 
           //  Log.i("remoteMessage", "Notification Title : "+ title);
 
           //  Log.i("remoteMessage", "Notification msg : "+remoteMessage.getNotification().getBody());
-
     }
 
     public Intent createIntentForAcceptRequest(Map<String, String> dataMap){

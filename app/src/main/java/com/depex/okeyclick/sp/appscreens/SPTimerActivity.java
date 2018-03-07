@@ -182,8 +182,6 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
                                     long millis=parseServerTime(serviceStartTime);
                                     preferences.edit().putLong("startServiceTime", millis).apply();
                                     preferences.edit().putBoolean("start_service", true).apply();
-
-
                                 }else if (status.equalsIgnoreCase("complete")){
                                     preferences.edit().putBoolean("spOnJob",false).apply();
                                     isTimerStart=false;
@@ -202,6 +200,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
+                        changeStatus(status);
                         Log.e("responseDataError", t.toString());
                     }
                 });

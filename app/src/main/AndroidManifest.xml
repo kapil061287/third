@@ -81,7 +81,10 @@
         <activity
             android:name=".appscreens.ServiceHistoryActivity"
             android:label="@string/title_activity_service_history"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <service android:name=".services.IsTaskCancelService"/>
     </application>
+
+
 
 </manifest>
