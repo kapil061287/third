@@ -76,4 +76,13 @@ public interface ProjectAPI {
 
     @POST("check_task_status.php")
     Call<String> checkSpStatus(@Body String body);
+
+    @POST("confirm_complete.php")
+    Call<String> confirmComplete(@Body String body);
+
+    @POST("rating.php")
+    Call<String> rating(@Body String body);
+
+    @POST("edit_profile.php")
+    Call<String> editProfile(@Body String body);
 }
