@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.depex.okeyclick.sp.appscreens.BookLaterActivity"
+    tools:showIn="@layout/activity_book_later">
+
+    <fragment
+        android:layout_width="match_parent"
+        android:id="@+id/map_fragment"
+        android:layout_weight="1"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_height="0dp"/>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/customer_pic"
+        android:layout_width="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="100dp" />
+    <TextView
+        android:id="@+id/customer_name"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <Button
+                android:text="Reject"
+                android:textColor="#FFFFFFFF"
+                android:id="@+id/reject_btn"
+                android:background="@color/y_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <Button
+                android:text="Accept"
+                android:id="@+id/accept_btn"
+                android:textColor="#FFFFFFFF"
+                android:background="@color/y_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>

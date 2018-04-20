@@ -74,9 +74,6 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
     SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_screen_first_face);
         ButterKnife.bind(this);
@@ -194,6 +191,7 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                     countrySpinner.setAdapter(adapter);
                     Log.i("retrofit2Json", countries+"");
                     break;
+
                 case "state_list":
                     JsonArray state_list=responseObj.getAsJsonArray("List");
                     State[]state=gson.fromJson(state_list, State[].class);
@@ -215,10 +213,10 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                     CitySpinnerAdapter citySpinnerAdapter=new CitySpinnerAdapter(this, cities);
                     citySpinner.setAdapter(citySpinnerAdapter);
                     break;
-
             }
         }
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -232,9 +230,10 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                 Call<JsonObject> stateCall=api.getStates(getString(R.string.apikey), countryId);
                 stateCall.enqueue(apiCallback);
                 break;
-            case R.id.city_spinner:
 
+            case R.id.city_spinner:
                 break;
+
             case R.id.state_spinner:
                 clearSpinner(citySpinner);
                 StateSpinnerAdapter stateSpinnerAdapter= (StateSpinnerAdapter) adapterView.getAdapter();
@@ -310,10 +309,11 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                     show("Please Select City !");
                     return;
                 }
-                if(!StringUtils.isValidPin(zip)){
+
+                /*if(!StringUtils.isValidPin(zip)){
                     show("please enter a valid pin code");
                     return;
-                }
+                }*/
 
 
                 try {
@@ -322,6 +322,8 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                     data.put("v_code", getString(R.string.v_code));
                     data.put("apikey", getString(R.string.apikey));
                     data.put("city", city);
+                    data.put("address", address);
+                    data.put("zipcode", zip);
                     data.put("country", country);
                     data.put("password", password);
                     data.put("state", state);
@@ -330,13 +332,9 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
                     data.put("last_name", last_name_signup.getText().toString());
                     data.put("signupWith", "");requestData.put("requestData", data);
                     requestData.put("first_fase", true );
-
-                    preferences.edit().putString("first_",requestData.toString()).commit();
-
+                    preferences.edit().putString("first_",requestData.toString()).apply();
                     Intent signUpSecond=new Intent(this, SignupScreenActivitySecondFace.class);
                     startActivity(signUpSecond);
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -347,7 +345,4 @@ public class SignupScreenActivityFirstFace extends AppCompatActivity implements 
     public void show(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
-
-
-
 }

@@ -11,12 +11,15 @@ import com.depex.okeyclick.sp.appscreens.HomeActivity;
 import com.depex.okeyclick.sp.appscreens.InvoiceActivity;
 import com.depex.okeyclick.sp.appscreens.LoginScreenActivity;
 import com.depex.okeyclick.sp.appscreens.PaymentConfirmActivity;
+import com.depex.okeyclick.sp.appscreens.ServiceChooseActivity;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.nio.file.LinkOption;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,12 +37,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-      /*  Intent intent=new Intent(this, PaymentConfirmActivity.class);
+       /* Intent intent=new Intent(this, ServiceChooseActivity.class);
         startActivity(intent);
         finish();
         if(1==1) {
             return;
         }*/
+
 
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
         isLogin=preferences.getBoolean("isLogin",false);
@@ -80,11 +84,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         data.put("user_id", preferences.getString("user_id", "0"));
         data.put("DeviceToken", preferences.getString("deviceToken", "0"));
         requestData.put("RequestData", data);
+        Log.i("requestData", "Splash Screen"+requestData.toString());
 
         projectAPI.checkToken(requestData.toString()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
                 try {
                     JSONObject res=new JSONObject(response.body());
                     Log.i(TAG, "onResponse: "+res.toString());
@@ -105,7 +109,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Log.e("responseDataError","Error in splash : "+ e.toString());
                         }
                         Intent isOnlineIntent=new Intent(SplashScreenActivity.this, HomeActivity.class);
                         startActivity(isOnlineIntent);

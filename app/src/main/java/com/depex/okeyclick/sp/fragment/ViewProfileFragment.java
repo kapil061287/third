@@ -2,6 +2,7 @@ package com.depex.okeyclick.sp.fragment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.depex.okeyclick.sp.GlideApp;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
+import com.depex.okeyclick.sp.appscreens.UpgradePlanActivity;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -55,7 +57,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class ViewProfileFragment extends Fragment implements OnMapReadyCallback {
+public class ViewProfileFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     SharedPreferences preferences;
     FusedLocationProviderClient client;
@@ -108,6 +110,9 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
     @BindView(R.id.download_pdf)
     Button downloadPdf;
 
+    @BindView(R.id.membership)
+    TextView memberShipPlan;
+
 
 
 
@@ -116,17 +121,35 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_profile_view_fragment, container, false);
         ButterKnife.bind(this, view);
+        client = LocationServices.getFusedLocationProviderClient(context);
         Toolbar toolbar=getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
         toolbar.setTitle("HOME");
-        preferences = context.getSharedPreferences("service_pref", Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(Utils.SITE_PREF, Context.MODE_PRIVATE);
         TextView username_text = view.findViewById(R.id.username_view_profile_fr);
-        username_text.setText("Mr. " + preferences.getString("fullname", "SP"));
+        username_text.setText(preferences.getString("fullname", "SP"));
         RatingBar ratingBar = view.findViewById(R.id.star_view_profile);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.user_location_view_profile);
         mapFragment.getMapAsync(this);
         ratingBar.setStar(4);
+        memberShipPlan.setOnClickListener(this);
+
         initProfile();
         return view;
+    }
+
+    private void setMemberShipPlan(String plan) {
+        switch (plan){
+            case "Basic":
+                memberShipPlan.setText("Basic (Upgrade)");
+                break;
+            case "Premium":
+                memberShipPlan.setText(plan+" (Upgrade)");
+                memberShipPlan.setTextColor(context.getResources().getColor(R.color.success_color));
+                break;
+            case "Advance":
+                memberShipPlan.setText(plan);
+                memberShipPlan.setTextColor(context.getResources().getColor(R.color.success_color));
+        }
     }
 
     private void initProfile() {
@@ -146,25 +169,33 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
                                 boolean success=res.getBoolean("successBool");
                                 if(success){
                                     JSONObject resObj=res.getJSONObject("response");
-                                    JSONArray resArr=resObj.getJSONArray("List");
-                                    JSONObject spData=resArr.getJSONObject(0);
+                                    JSONObject spData=resObj.getJSONObject("List");
                                     String totalEarning=spData.getString("total_earning");
                                     String lastEarning=spData.getString("last_earning");
-                                    totalEarningViewProfile.setText(totalEarning+"$");
-                                    netEarning.setText(lastEarning+"$");
+
+                                    if(totalEarning!=null)
+                                    totalEarningViewProfile.setText(totalEarning+" $");
+                                    else
+                                        totalEarningViewProfile.setText("0.00 $");
+                                    if(netEarning!=null)
+                                    netEarning.setText(lastEarning+" $");
+                                    else netEarning.setText("0.00 $");
                                     GlideApp.with(context).load(spData.getString("user_images")).into(profilePic);
                                     serviceViewProfile.setText(spData.getString("category"));
                                     mobileViewProfile.setText(spData.getString("mobile"));
-                                    userNameViewProfile.setText("Mr. "+spData.getString("first_name")+" "+spData.getString("last_name"));
+
+                                    setMemberShipPlan(spData.getString("premium_membership"));
+                                    String memberShipId=spData.getString("member_ship_id");
+                                    preferences.edit().putString("membership", spData.getString("premium_membership"))
+                                            .putString("membershipId", memberShipId).apply();
+                                    userNameViewProfile.setText(spData.getString("first_name")+" "+spData.getString("last_name"));
                                     pricePerHour.setText(spData.getString("pac_price_per_hr")+"$ / hour");
                                     float rating= (float) spData.getDouble("rating");
                                     starViewProfile.setStar(3.4f);
-
                                 }
                             } catch (JSONException e) {
                                Log.e("responseDataError","View Profile Error: "+ e.toString());
                             }
-
                         }
 
                         @Override
@@ -184,7 +215,7 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        client = LocationServices.getFusedLocationProviderClient(context);
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(getActivity(),
@@ -193,33 +224,8 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
 
             return;
         }
+        setLocation();
 
-        client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location==null)return;
-                MarkerOptions options=new MarkerOptions();
-                LatLng latLng=new LatLng(location.getLatitude(), location.getLongitude());
-
-                options.position(latLng);
-                options.visible(true);
-                options.title(preferences.getString("fullname", "You"));
-
-                marker=ViewProfileFragment.this.googleMap.addMarker(options);
-                CircleOptions circleOptions=new CircleOptions();
-                circleOptions.center(latLng);
-                circleOptions.clickable(true);
-                circleOptions.radius(500);
-                circleOptions.visible(true);
-                circleOptions.strokeColor(Color.RED);
-
-
-                ViewProfileFragment.this.googleMap.addCircle(circleOptions);
-                CameraUpdate cameraUpdate=CameraUpdateFactory.newLatLng(latLng);
-                ViewProfileFragment.this.googleMap.moveCamera(cameraUpdate);
-
-            }
-        });
     }
 
     @Override
@@ -229,8 +235,52 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback 
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_DENIED){
 
                 }else {
+                   setLocation();
                 }
                 break;
         }
+    }
+
+    void setLocation() {
+        client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location == null) return;
+                MarkerOptions options = new MarkerOptions();
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                options.position(latLng);
+                options.visible(true);
+                options.title(preferences.getString("fullname", "You"));
+
+                marker = ViewProfileFragment.this.googleMap.addMarker(options);
+                CircleOptions circleOptions = new CircleOptions();
+                circleOptions.center(latLng);
+                circleOptions.clickable(true);
+                circleOptions.radius(500);
+                circleOptions.visible(true);
+                circleOptions.strokeColor(Color.RED);
+
+
+                ViewProfileFragment.this.googleMap.addCircle(circleOptions);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                ViewProfileFragment.this.googleMap.moveCamera(cameraUpdate);
+
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.membership:
+                    startUpgradeActivity();
+                break;
+        }
+    }
+
+    private void startUpgradeActivity() {
+        Intent intent=new Intent(context, UpgradePlanActivity.class);
+        startActivity(intent);
     }
 }

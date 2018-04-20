@@ -15,14 +15,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.depex.okeyclick.sp.GlideApp;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.depex.okeyclick.sp.fragment.AcceptServiceFragment;
+import com.depex.okeyclick.sp.fragment.InviteAndEarnFragment;
 import com.depex.okeyclick.sp.fragment.IsOnlineFragment;
 import com.depex.okeyclick.sp.fragment.PublicProfileFragment;
 import com.depex.okeyclick.sp.fragment.ViewProfileFragment;
@@ -81,6 +84,8 @@ public class HomeActivity extends AppCompatActivity
             TextView name=view.findViewById(R.id.user_name_header_nav);
             name.setText(fullname);
             TextView textView=view.findViewById(R.id.textView);
+            ImageView view1=view.findViewById(R.id.imageView);
+            GlideApp.with(HomeActivity.this).load("").placeholder(R.drawable.user_dp_place_holder).into(view1);
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,6 +183,13 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.service_history_menu:
                 startServiceHistoryActivity();
+                break;
+            case R.id.share_with_others_menu:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container_fragement, new InviteAndEarnFragment())
+                        .addToBackStack(null)
+                        .commit();
                 break;
         }
 

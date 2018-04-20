@@ -2,6 +2,8 @@ package com.depex.okeyclick.sp.modal;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by we on 1/15/2018.
  */
@@ -16,6 +18,17 @@ public class Service {
     private String imagesUrl;
     @SerializedName("description")
     private String description;
+
+    @SerializedName("subcategory")
+    List<SubService> subServices;
+
+    public void setSubServices(List<SubService> subServices) {
+        this.subServices = subServices;
+    }
+
+    public List<SubService> getSubServices() {
+        return subServices;
+    }
 
     public String getId() {
         return id;

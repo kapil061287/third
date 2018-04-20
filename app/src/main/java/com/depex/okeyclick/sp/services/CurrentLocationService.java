@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,8 +13,10 @@ import android.location.Location;
 
 import android.location.LocationManager;
 
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 
@@ -39,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,6 +60,8 @@ public class CurrentLocationService extends JobService {
     LocationCallback mLocationCallback;
     SharedPreferences preferences;
 
+
+
     @Override
     public boolean onStartJob(JobParameters job) {
         //manager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -64,10 +70,6 @@ public class CurrentLocationService extends JobService {
         isOnline=preferences.getBoolean("isOnline", false);
         userid=preferences.getString("user_id", "0");
         fullname=preferences.getString("fullname", "0");
-
-
-
-        //checkRequestfromCustomer();
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -88,9 +90,18 @@ public class CurrentLocationService extends JobService {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                for(Location location : locationResult.getLocations()){
+                Location location=locationResult.getLastLocation();
+                //for(Location location : locationResult.getLocations()){
                     changeLocation(location);
-                }
+                    if(preferences.getBoolean(Utils.JOB_IN_PROGRESS, false)) {
+                        Intent intent = new Intent(Utils.CURRENT_LOCATION);
+                        Bundle bundle=new Bundle();
+                        bundle.putDouble("lat", location.getLatitude());
+                        bundle.putDouble("lng", location.getLongitude());
+                        intent.putExtras(bundle);
+                        LocalBroadcastManager.getInstance(CurrentLocationService.this).sendBroadcast(intent);
+                    }
+                //}
             }
         };
 
@@ -113,72 +124,11 @@ public class CurrentLocationService extends JobService {
         return true;
     }
 
-    private void checkRequestfromCustomer() {
-        JSONObject requestData=new JSONObject();
-        JSONObject data=new JSONObject();
-        try {
-            data.put("v_code", getString(R.string.v_code));
-            data.put("apikey", getString(R.string.apikey));
-            data.put("userToken", preferences.getString("userToken", "u"));
-            data.put("user_id", preferences.getString("user_id", "0"));
-            requestData.put("RequestData", data);
-            new Retrofit.Builder()
-                    .baseUrl(Utils.SITE_URL)
-                    .addConverterFactory(new StringConvertFactory())
-                    .build()
-                    .create(ProjectAPI.class)
-                    .getNotification(requestData.toString())
-                    .enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            Log.i("responseData", "NotificationAPI : "+ response.body());
-                            String responseBody=response.body();
-                            try {
-                                JSONObject res=new JSONObject(responseBody);
-                                boolean success=res.getBoolean("successBool");
-                                if(success){
-                                    JSONObject resObj=res.getJSONObject("response");
-                                    JSONArray jsonArray=resObj.getJSONArray("List");
-                                    for(int i=0;i<jsonArray.length();i++){
-                                        JSONObject jsonObject=jsonArray.getJSONObject(i);
-                                       String task_id= jsonObject.getString("task_id");
-                                       String pref_task=preferences.getString("task_id", "0");
-                                       if(!pref_task.equals(task_id)){
-                                           preferences
-                                                   .edit()
-                                                   .putString("task_id", task_id).apply();
-                                           jsonObject.getString("notification_data");
-                                       }
-                                    }
-
-                                    if(!preferences.getBoolean("isOffline", false)){
-                                        checkRequestfromCustomer();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                Log.e("responseDataError", e.toString());
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.e("responseDataError", t.toString());
-                        }
-                    });
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public boolean onStopJob(JobParameters job) {
         Log.i("jobDispatcher", "Location Job is closed !");
-        //if(mLocationCallback!=null)
-      //  mFusedLocationclient.removeLocationUpdates(mLocationCallback);
+
         return true;
     }
 
@@ -235,111 +185,4 @@ public class CurrentLocationService extends JobService {
             e.printStackTrace();
         }
     }
-
-
-public void sendNotificationToSp(String task_id, String customer_data){
-
-        String[]arr=customer_data.split(":");
-
-        Log.i("responseDataCustomer", "Customer Address : "+arr.length);
-
-        NotificationManager manager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        String channelid="notify_chennel1";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel=new NotificationChannel(channelid, "NotifyChannel", NotificationManager.IMPORTANCE_HIGH);
-            manager.createNotificationChannel(channel);
-        }
-
-       /* String task=dataMap.get("task_id");
-        String msg=null;
-        if(task!=null){
-            msg="You have a request from a customer !";
-        }else{
-            msg="Another Notification";
-        }
-        NotificationCompat.Builder builder=new NotificationCompat.Builder(this, channelid);
-        builder.setSmallIcon(R.drawable.logo);
-        Intent intent=new Intent(this , AcceptServiceActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putString("subcategory",dataMap.get("subcategory") );
-        bundle.putString("customerName", dataMap.get("customer_name") );
-        bundle.putString("customerAddress", dataMap.get("customer_address"));
-        bundle.putString("task_id", task_id);
-        bundle.putLong("requestTime", new Date().getTime());
-        bundle.putString("customerMobile", dataMap.get("customer_mobile"));
-        intent.putExtras(bundle);
-        PendingIntent pendingIntent=PendingIntent.getActivity(this,1, intent,  PendingIntent.FLAG_CANCEL_CURRENT);
-        builder.setContentIntent(pendingIntent);
-        builder.setContentTitle("Service Request");
-        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        builder.setContentText("You have a request from a customer !");
-        Notification notification=builder.build();
-        notification.flags=NotificationCompat.FLAG_AUTO_CANCEL;
-        manager.notify(0, notification);*/
-}
-
-    private void checkServiceProviderRunningStatus() {
-
-        JSONObject requestData=new JSONObject();
-        JSONObject data=new JSONObject();
-
-        try {
-            data.put("v_code", getString(R.string.v_code));
-            data.put("apikey", getString(R.string.apikey));
-            data.put("user_id", preferences.getString("user_id", "0"));
-            data.put("task_id", preferences.getString("task_id", "0"));
-            requestData.put("RequestData", data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-        new Retrofit.Builder()
-                .baseUrl(Utils.SITE_URL)
-                .addConverterFactory(new StringConvertFactory())
-                .build()
-                .create(ProjectAPI.class)
-                .checkSpStatus(requestData.toString())
-                .enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        String responseString =response.body();
-                        if(responseString==null){
-                            return;
-                        }
-                        Log.i("responseDataRunning", responseString+"" );
-                        try {
-                            JSONObject res=new JSONObject(responseString);
-                            boolean success=res.getBoolean("successBool");
-                            if(success){
-                                JSONObject resObj=res.getJSONObject("response");
-                                int task_status=resObj.getInt("task_status");
-
-                                JSONObject spData=resObj.getJSONObject("sp_Data");
-                                String firstName=spData.getString("first_name");
-
-                                //String serviceName
-
-                                if(task_status!=1){
-                                    checkServiceProviderRunningStatus();
-                                }else {
-
-                                }
-                            }
-                        } catch (JSONException e) {
-                            Log.e("responseDataError", e.toString());
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.i("responseDataError", t.toString());
-                    }
-                });
-    }
-
 }

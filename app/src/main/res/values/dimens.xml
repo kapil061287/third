@@ -21,5 +21,9 @@
     <dimen name="left_margin_in_invoice">25dp</dimen>
     <dimen name="right_margin_in_invoice">25dp</dimen>
     <dimen name="height_mobile_box">45dp</dimen>
+    <dimen name="margin_left">20dp</dimen>
+    <dimen name="margin_right">20dp</dimen>
+    <dimen name="input_padding_left">10dp</dimen>
+    <dimen name="margin_right_plan_desc">20dp</dimen>
 
 </resources>

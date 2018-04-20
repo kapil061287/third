@@ -3,6 +3,7 @@
     <color name="colorPrimary">#fffabaff</color>
     <color name="colorPrimaryDark">#ffc689cc</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark_70">#eec689cc</color>
 
     <color name="skip_back_color">#99438c</color>
     <color name="spleshColor">#fddfff</color>
@@ -15,5 +16,7 @@
     <color name="y_color">#ff2186c4</color>
     <color name="term_condition_color">#7b7676</color>
     <color name="navigation_mark">#bec2e126</color>
+    <color name="success_color">#22BB33</color>
+    <color name="service_color_timer">@color/y_color</color>
 
 </resources>

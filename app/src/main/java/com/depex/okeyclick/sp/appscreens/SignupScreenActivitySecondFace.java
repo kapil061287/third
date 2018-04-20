@@ -1,14 +1,18 @@
 package com.depex.okeyclick.sp.appscreens;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
@@ -27,6 +32,7 @@ import com.depex.okeyclick.sp.api.APICallback;
 import com.depex.okeyclick.sp.api.ApiListener;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
+import com.depex.okeyclick.sp.modal.ChooseAdapterModal;
 import com.depex.okeyclick.sp.modal.Package;
 import com.depex.okeyclick.sp.modal.Service;
 import com.depex.okeyclick.sp.modal.SubService;
@@ -40,9 +46,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.apptik.widget.multiselectspinner.BaseMultiSelectSpinner;
+import io.apptik.widget.multiselectspinner.ExpandableMultiSelectSpinner;
 import io.apptik.widget.multiselectspinner.MultiSelectSpinner;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -51,7 +63,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignupScreenActivitySecondFace extends AppCompatActivity implements ApiListener<JsonObject>, AdapterView.OnItemSelectedListener,  View.OnClickListener {
+public class SignupScreenActivitySecondFace extends AppCompatActivity implements ApiListener<JsonObject>, AdapterView.OnItemSelectedListener,  View.OnClickListener, View.OnFocusChangeListener {
 
     @BindView(R.id.sub_category_multispinner)
     MultiSelectSpinner subCategorySpinner;
@@ -84,8 +96,16 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
     @BindView(R.id.term_condition_checkbox)
     CheckBox termConditionCheckbox;
 
+    @BindView(R.id.category_sub_category)
+    EditText categorySubCategory;
+
+    String jsonFromChooseActivity;
+
     StringBuilder subcategoriesforform=new StringBuilder();
     String tag=this.getClass().getName();
+    private String categoryStr;
+    private String categorySubStr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +137,9 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
         subCategorySpinner.setOnItemSelectedListener(this);
         send_otp_btn.setOnClickListener(this);
         registerBtn.setOnClickListener(this);
+        categorySubCategory.setOnClickListener(this);
+        categorySubCategory.setOnFocusChangeListener(this);
+        categorySubCategory.setInputType(InputType.TYPE_NULL);
     }
 
 
@@ -264,6 +287,8 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
            }
     }
 
+
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -303,16 +328,20 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                    // send_otp_btn.setVisibility(View.GONE);
                 }else {
                     Toast.makeText(this, "Invalid OTP!", Toast.LENGTH_LONG).show();
+                    return;
                     //send_otp_btn.setText("Resend OTP");
                 }
                 if(!termConditionCheckbox.isChecked()){
                     Toast.makeText(this, "Please Check term and condition box !", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if(categoryStr==null){
+                    Toast.makeText(this, "Please select minimum 1 Category!",Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if(isVerifyOTP){
                     String mobile=mobileSignup.getPhoneNumber();
-                    String service=((Service)serviceSpinner.getSelectedItem()).getId();
-                    String subservices=subcategoriesforform.toString();
+
                     String packageID=((Package)packageSpinner.getSelectedItem()).getId();
                     String distance=distanceSpinner.getSelectedItem().toString();
                     String firstFace=preferences.getString("first_", "0");
@@ -326,8 +355,8 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                             data.put("accessType", "False");
                             data.put("accessName", "Normal");
                             data.put("mobile", mobile);
-                            data.put("category", service);
-                            data.put("subcategory", subservices);
+                            data.put("category", categoryStr);
+                            data.put("subcategory", categorySubStr);
                             data.put("package", packageID);
                             String dist=distance.split("-")[1];
                             data.put("distance", dist);
@@ -336,6 +365,7 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
   */
                             JSONObject requestData1=new JSONObject();
                             requestData1.put("RequestData", data);
+                            Log.i("requestData", "Signup Process second : "+requestData1.toString());
                             StringConvertFactory factory=new StringConvertFactory();
                             Retrofit.Builder builder=new Retrofit.Builder()
                                     .baseUrl(Utils.SITE_URL)
@@ -343,7 +373,8 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                             Retrofit retrofit=builder.build();
                             //JsonObject jsonObject=new JsonObject();
 
-                            Call<String> call=retrofit.create(ProjectAPI.class).signUp(requestData1.toString());
+                            Call<String> call=retrofit.create(ProjectAPI.class)
+							.signUp(requestData1.toString());
                             call.enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
@@ -373,9 +404,9 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                                     } catch (JSONException e) {
                                         Log.e("responseData", "Exception Error : "+e.toString());
                                     }
-
-
                                 }
+
+
 
                                 @Override
                                 public void onFailure(Call<String> call, Throwable t) {
@@ -394,8 +425,77 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                 }else {
                     Log.i(tag, "Otp is not verified !");
                 }
-
+                break;
+            case R.id.category_sub_category:
+                String categoryText=jsonFromChooseActivity;
+                if(categoryText!=null){
+                    Bundle bundle=new Bundle();
+                    bundle.putString("json", categoryText);
+                    startMultiServiceChooseActivity(bundle);
+                }else {
+                    startMultiServiceChooseActivity(null);
+                }
                 break;
         }
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1) {
+            if(resultCode==RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                String json = bundle.getString("json");
+                categorySubCategory.setText(json);
+                jsonFromChooseActivity=json;
+                Log.i("responseData", "ONActivity Result : " + json);
+                ChooseAdapterModal[] chooseAdapterModals=new Gson().fromJson(json, ChooseAdapterModal[].class);
+                Set<String> serviceIds=new HashSet<>();
+                Set<String> subServiceIds=new HashSet<>();
+                Set<String> subServicesName=new HashSet<>();
+                if(chooseAdapterModals!=null){
+                    List<ChooseAdapterModal> list=new ArrayList<>(Arrays.asList(chooseAdapterModals));
+                    for(Iterator<ChooseAdapterModal> i= list.iterator();i.hasNext();){
+                        ChooseAdapterModal modal=i.next();
+                        serviceIds.add(modal.getServiceId());
+                        subServiceIds.add(modal.getSubServiceId());
+                        subServicesName.add(modal.getSubServiceName());
+                    }
+                    categorySubCategory.setText(subServicesName.toString());
+                    char ch=' ';
+                    StringBuilder subServiceIdStr=new StringBuilder(subServiceIds.toString());
+                    StringBuilder serviceIdStr=new StringBuilder(serviceIds.toString());
+
+                    subServiceIdStr.setCharAt(subServiceIdStr.indexOf("["), ch);
+                    subServiceIdStr.setCharAt(subServiceIdStr.indexOf("]"), ch);
+
+                    serviceIdStr.setCharAt(serviceIdStr.indexOf("["), ch);
+                    serviceIdStr.setCharAt(serviceIdStr.indexOf("]"), ch);
+                    Log.i("responseData", "Register Process : "+serviceIdStr);
+                    Log.i("responseData", "Register Process : "+subServiceIdStr);
+                    categoryStr=serviceIdStr.toString();
+                    categorySubStr=subServiceIdStr.toString();
+                }
+
+            }else {
+
+            }
+        }
+    }
+
+
+    private void startMultiServiceChooseActivity(Bundle bundle) {
+
+        Intent intent=new Intent(this, ServiceChooseActivity.class);
+        if(bundle!=null){
+            intent.putExtras(bundle);
+        }
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+
     }
 }

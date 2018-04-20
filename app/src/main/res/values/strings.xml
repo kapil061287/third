@@ -12,6 +12,23 @@
     <string name="google_map_api_key">AIzaSyBMSbObw6L55ReqFc9hPNA9CNRd552HYQ8</string>
     <string name="server_key">AIzaSyCD42eqt4BAMw-9y4sqLF0Ac6xV_ZxzOo4</string>
     <string name="mobile">Mobile</string>
-    <string name="term_and_condition_checkbox">By proceeding , I agree that cabily or its representatives may contact me by email, phone, or SMS (including by automatic telephone dialing system ) at the email address or number I provide, including for marketing purposes. I have read and understand the relevant Service Provider Privacy Statement.</string>
+    <string name="term_and_condition_checkbox">I understand and I agree the terms and conditions of service.</string>
     <string name="title_activity_service_history">ServiceHistoryActivity</string>
+    <string name="please_choose_services">Please Choose Services</string>
+    <string name="all_services">All Services</string>
+    <string name="upcomming">Upcomming</string>
+    <string name="completed">Completed</string>
+    <string name="invit_text_bold">\"When you invite  a friend to book a service through our app. You will recieve 5 \u20ac in wallet.\"</string>
+    <string name="invite_text">\"When you invite  a friend to book a service through our app. You will recieve 5 \u20ac in wallet.\"</string>
+    <string name="title_activity_upgrade_plan">Upgrade</string>
+    <string name="basic_pack">Basic</string>
+    <string name="premium">Premium</string>
+    <string name="advance">Advance</string>
+    <string name="uro">\u20ac</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_book_later">BookLaterActivity</string>
+    <string name="title_activity_start_job">StartJobActivity</string>
+    <string name="show_date_format">MMM dd, yyyy</string>
+    <string name="date_time_format_from_web">yyyy-MM-d H:m:s</string>
+
 </resources>

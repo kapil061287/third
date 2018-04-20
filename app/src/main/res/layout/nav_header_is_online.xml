@@ -16,22 +16,26 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/logo" />
 
     <TextView
-
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_gravity="center_horizontal"
         android:text="SP"
+        android:fontFamily="@font/nexa"
         android:id="@+id/user_name_header_nav"
         android:textColor="#ffffffff"
         />
 
     <TextView
         android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
         android:textColor="#ffffffff"
+        android:fontFamily="@font/nexa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Profile" />

@@ -81,10 +81,30 @@
         <activity
             android:name=".appscreens.ServiceHistoryActivity"
             android:label="@string/title_activity_service_history"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <service android:name=".services.IsTaskCancelService"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name=".services.IsTaskCancelService" />
+
+        <activity
+            android:name=".appscreens.ServiceChooseActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBarChoosActivity" />
+        <activity
+            android:name=".appscreens.UpgradePlanActivity"
+            android:label="@string/title_activity_upgrade_plan"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".appscreens.PaymentActivity"
+            android:label="@string/title_activity_payment"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".appscreens.BookLaterActivity"
+            android:label="@string/title_activity_book_later"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".appscreens.StartJobActivity"
+            android:label="@string/title_activity_start_job"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
-
 
 </manifest>

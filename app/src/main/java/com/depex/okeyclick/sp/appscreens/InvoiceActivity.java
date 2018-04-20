@@ -76,21 +76,21 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
     TextView totalAmount2;
 
 
-
     String taskDuration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
-        preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
-        progressDialog=new ProgressDialog(this);
+        preferences = getSharedPreferences("service_pref", MODE_PRIVATE);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Invoice is generating ...");
         progressDialog.show();
         ButterKnife.bind(this);
         sendBtn.setOnClickListener(this);
         preferences.edit().putBoolean("isInInvoice", true).apply();
-         Bundle bundle=getIntent().getExtras();
-        taskDuration=bundle.getString("task_duration","0");
+        Bundle bundle = getIntent().getExtras();
+        taskDuration = bundle.getString("task_duration", "0");
         //for testing only !
         /*Random random=new Random();
         int rn=random.nextInt(3);
@@ -102,11 +102,11 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
     private void generateInvoice(String taskDuration) {
 
         //end for Testing only
-        String user_id=preferences.getString("user_id", "0");
-        String task_id=preferences.getString("task_id", "0");
-        String userToken=preferences.getString("userToken", "0");
-        JSONObject requestData=new JSONObject();
-        JSONObject data=new JSONObject();
+        String user_id = preferences.getString("user_id", "0");
+        String task_id = preferences.getString("task_id", "0");
+        String userToken = preferences.getString("userToken", "0");
+        JSONObject requestData = new JSONObject();
+        JSONObject data = new JSONObject();
         try {
             data.put("v_code", getString(R.string.v_code));
             data.put("apikey", getString(R.string.apikey));
@@ -115,7 +115,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
             data.put("task_id", task_id);
             data.put("task_WDuration", taskDuration);
             requestData.put("RequestData", data);
-            Log.i("requestData","Generating Invoice : "+requestData.toString());
+            Log.i("requestData", "Generating Invoice : " + requestData.toString());
             new Retrofit.Builder()
                     .baseUrl(Utils.SITE_URL)
                     .addConverterFactory(new StringConvertFactory())
@@ -125,39 +125,39 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                     .enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            Log.i("responseData", "Generate Invoice : "+response.body());
+                            Log.i("responseData", "Generate Invoice : " + response.body());
 
-                            NumberFormat numberFormat=NumberFormat.getInstance();
+                            NumberFormat numberFormat = NumberFormat.getInstance();
                             numberFormat.setMaximumFractionDigits(2);
 
-                            String responseString=response.body();
+                            String responseString = response.body();
                             try {
-                                JSONObject res=new JSONObject(responseString);
-                                boolean success=res.getBoolean("successBool");
-                                if(success){
-                                    JSONObject resObj=res.getJSONObject("response");
-                                    double baseFare=  resObj.getDouble("base_fare");
-                                    double subTotal=  resObj.getDouble("subtotal");
+                                JSONObject res = new JSONObject(responseString);
+                                boolean success = res.getBoolean("successBool");
+                                if (success) {
+                                    JSONObject resObj = res.getJSONObject("response");
+                                    double baseFare = resObj.getDouble("base_fare");
+                                    double subTotal = resObj.getDouble("subtotal");
 
-                                    double total=  resObj.getDouble("total");
-                                    String customerName=resObj.getString("cs_name");
-                                    String invoiceDate=resObj.getString("created_date");
-                                    String cityTex=resObj.getString("city_tax")+"%";
-                                    String serviceTax=resObj.getString("service_tax")+"%";
-                                    String serviceHours=resObj.getString("task_WDuration");
-                                    String taskKey=resObj.getString("task_key");
+                                    double total = resObj.getDouble("total");
+                                    String customerName = resObj.getString("cs_name");
+                                    String invoiceDate = resObj.getString("created_date");
+                                    String cityTex = resObj.getString("city_tax") + "%";
+                                    String serviceTax = resObj.getString("service_tax") + "%";
+                                    String serviceHours = resObj.getString("task_WDuration");
+                                    String taskKey = resObj.getString("task_key");
 
 
                                     basicFare.setText(numberFormat.format(baseFare));
                                     InvoiceActivity.this.subTotal.setText(numberFormat.format(subTotal));
                                     InvoiceActivity.this.customerName.setText(customerName);
                                     InvoiceActivity.this.cityTex.setText(cityTex);
-                                    InvoiceActivity.this.totalAmount.setText("Total "+numberFormat.format(total));
+                                    InvoiceActivity.this.totalAmount.setText("Total " + numberFormat.format(total));
                                     InvoiceActivity.this.dateInvoice.setText(invoiceDate);
                                     InvoiceActivity.this.serviceTex.setText(serviceTax);
                                     InvoiceActivity.this.serviceHours.setText(serviceHours);
                                     InvoiceActivity.this.totalAmount2.setText(numberFormat.format(total));
-                                    InvoiceActivity.this.jobId.setText("Job ID : "+taskKey);
+                                    InvoiceActivity.this.jobId.setText("Job ID : " + taskKey);
                                 }
                             } catch (JSONException e) {
                                 Log.e("responseDataError", e.toString());
@@ -182,11 +182,11 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
 
     private void sendInvoiceToCustomer(String taskDuration) {
 
-        String user_id=preferences.getString("user_id", "0");
-        String task_id=preferences.getString("task_id", "0");
-        String userToken=preferences.getString("userToken", "0");
-        JSONObject requestData=new JSONObject();
-        JSONObject data=new JSONObject();
+        String user_id = preferences.getString("user_id", "0");
+        String task_id = preferences.getString("task_id", "0");
+        String userToken = preferences.getString("userToken", "0");
+        JSONObject requestData = new JSONObject();
+        JSONObject data = new JSONObject();
         try {
             data.put("v_code", getString(R.string.v_code));
             data.put("apikey", getString(R.string.apikey));
@@ -195,7 +195,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
             data.put("task_id", task_id);
             data.put("task_WDuration", taskDuration);
             requestData.put("RequestData", data);
-            Log.i("requestData","Generating Invoice : "+requestData.toString());
+            Log.i("requestData", "Generating Invoice : " + requestData.toString());
             new Retrofit.Builder()
                     .baseUrl(Utils.SITE_URL)
                     .addConverterFactory(new StringConvertFactory())
@@ -205,15 +205,15 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                     .enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            Log.i("responseData", "Generate Invoice : "+response.body());
+                            Log.i("responseData", "Generate Invoice : " + response.body());
 
-                            String responseString=response.body();
+                            String responseString = response.body();
                             try {
-                                JSONObject res=new JSONObject(responseString);
-                                boolean success=res.getBoolean("successBool");
-                                if(success){
-                                    MyTask myTask=new MyTask();
-                                    myTask.execute();
+                                JSONObject res = new JSONObject(responseString);
+                                boolean success = res.getBoolean("successBool");
+                                if (success) {
+                                    // MyTask myTask=new MyTask();
+                                    //  myTask.execute();
                                     /*JSONObject resObj=res.getJSONObject("response");
                                     String baseFare=resObj.getString("base_fare");
                                     String subTotal=resObj.getString("subtotal");
@@ -262,13 +262,23 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.send_btn:
                 sendInvoiceToCustomer(taskDuration);
                 break;
         }
     }
-    String confirmPayment;
+
+}
+
+
+
+
+
+
+
+
+   /* String confirmPayment;
 
     private void checkServiceProviderRunningStatus() {
 
@@ -300,7 +310,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                         if(responseString==null){
                             return;
                         }
-                        Log.i("responseDataRunning", responseString+"" );
+                        Log.i("responseDataRunning", "invoice Activity : "+responseString+"" );
                         try {
                             JSONObject res=new JSONObject(responseString);
                             boolean success=res.getBoolean("successBool");
@@ -335,8 +345,8 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 });
     }
-
-    class MyTask extends AsyncTask<String, String ,String>{
+*/
+    /*class MyTask extends AsyncTask<String, String ,String>{
 
         @Override
         protected String doInBackground(String... strings) {
@@ -349,4 +359,4 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
             super.onPostExecute(s);
         }
     }
-}
+}*/

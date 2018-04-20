@@ -6,29 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/navigation_mark"
-        android:drawablePadding="-25dp"
-        android:drawableTop="@drawable/ic_arrow_drop_up_black_24dp"
-        android:elevation="20dp"
-        android:text="Navigate"
-        android:id="@+id/navigate_btn"
-        android:textColor="#ffffffff"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="0dp" />
 
-    <fragment
-        android:id="@+id/map_in_accept__service_frgment"
-        class="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-
-        android:layout_height="match_parent"/>
 
 
     <ImageView
@@ -64,7 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
         android:layout_marginEnd="0dp"
-
         android:layout_marginStart="0dp"
         android:background="#ffff0000"
         android:text="Reject"
@@ -115,7 +92,7 @@
             android:text="Service Location"
             android:textAllCaps="true"
             android:id="@+id/service_name_accept"
-            android:textColor="#ffffffff"
+            android:textColor="@color/service_color_timer"
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -123,42 +100,132 @@
             android:layout_width="wrap_content"
             android:id="@+id/service_address_accept"
             android:layout_marginLeft="@dimen/address_accept_margin"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/address_accept_margin"
             android:layout_height="wrap_content"
             android:text="A-90, Sec 4 Noida Pin code-201301"
-            android:textColor="#ffffffff"
+            android:textColor="@color/service_color_timer"
             android:textSize="20dp" />
-
-
     </LinearLayout>
+
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:id="@+id/call_to_customer"
-        android:visibility="gone"
-        android:elevation="10dp"
-
-        android:layout_marginStart="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        android:layout_height="match_parent">
+        <fragment
             android:layout_weight="1"
-            android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
-            android:paddingRight="20dp"
-            android:id="@+id/customer_call_btn"
-            android:background="@color/y_color"
-            android:text="Start"
-            android:textColor="#ffffffff" />
+            android:id="@+id/map_in_accept__service_frgment"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:id="@+id/call_to_customer"
+            android:visibility="gone"
+            android:elevation="10dp"
+            android:layout_marginStart="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:background="#FFFFFFFF"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/customer_img"
+                    android:layout_width="30dp"
+                    android:src="@drawable/user_dp_place_holder"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp" />
+                <LinearLayout
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/customer_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/service_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/customer_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+    <Button
+        android:layout_gravity="center_horizontal"
+        android:background="@color/y_color"
+        android:text="Not Paid"
+        android:textColor="#FFFFFFFF"
+        android:id="@+id/not_paid_call_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+                android:paddingRight="20dp"
+                android:id="@+id/customer_call_btn"
+                android:background="@color/y_color"
+                android:text="Start"
+                android:textColor="#ffffffff" />
+    </FrameLayout>
+
+</LinearLayout>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/y_color"
+        android:drawablePadding="-25dp"
+        android:drawableTop="@drawable/ic_arrow_drop_up_black_24dp"
+        android:elevation="20dp"
+        android:text="Navigate"
+        android:id="@+id/navigate_btn"
+        android:textColor="#ffffffff"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="0dp" />
 
 </android.support.constraint.ConstraintLayout>

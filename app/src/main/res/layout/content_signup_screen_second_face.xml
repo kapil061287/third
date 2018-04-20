@@ -76,6 +76,7 @@
     android:paddingLeft="@dimen/input_field_paddingLeft"
     android:background="@drawable/input_field_back"
     android:layout_marginRight="@dimen/right_margin_login"
+    android:visibility="gone"
     android:layout_marginLeft="@dimen/left_margin_login"
     android:layout_width="match_parent"
     android:layout_height="@dimen/input_field_height">
@@ -87,12 +88,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </Spinner>
-
 </FrameLayout>
+
         <FrameLayout
             android:layout_marginTop="@dimen/input_field_margin_top"
             android:paddingLeft="@dimen/input_field_paddingLeft"
             android:background="@drawable/input_field_back"
+            android:visibility="gone"
             android:layout_marginRight="@dimen/right_margin_login"
             android:layout_marginLeft="@dimen/left_margin_login"
             android:layout_width="match_parent"
@@ -101,10 +103,26 @@
     <io.apptik.widget.multiselectspinner.MultiSelectSpinner
         android:layout_width="match_parent"
         android:layout_margin="5dp"
+
         android:layout_gravity="center_vertical"
         android:id="@+id/sub_category_multispinner"
         android:layout_height="wrap_content"/>
         </FrameLayout>
+
+        <EditText
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:hint="Services"
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:id="@+id/category_sub_category"
+            android:gravity="left|center_vertical"
+            android:textSize="17dp"
+            android:layout_height="@dimen/input_field_height" />
+
         <FrameLayout
             android:layout_marginTop="@dimen/input_field_margin_top"
             android:paddingLeft="@dimen/input_field_paddingLeft"
@@ -139,16 +157,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </FrameLayout>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_marginRight="@dimen/right_margin_login"
-            android:layout_marginLeft="@dimen/left_margin_login"
-            android:background="@drawable/input_field_back"
-            android:hint="Experience"
-            android:paddingLeft="@dimen/input_field_paddingLeft"
-            android:layout_marginTop="@dimen/input_field_margin_top"
-            android:inputType="number"
-            android:layout_height="@dimen/input_field_height" />
+
 
         <EditText
             android:paddingLeft="@dimen/input_field_paddingLeft"
@@ -159,6 +168,7 @@
             android:background="@drawable/input_field_back"
             android:hint="Hourly Rate"
             android:inputType="number"
+            android:visibility="gone"
             android:layout_height="@dimen/input_field_height" />
         <CheckBox
             android:layout_marginTop="@dimen/input_field_margin_top"
@@ -184,5 +194,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
 </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

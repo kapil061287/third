@@ -3,29 +3,28 @@ package com.depex.okeyclick.sp.appscreens;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.depex.okeyclick.sp.R;
-import com.depex.okeyclick.sp.adapters.ServiceHistoryAdapter;
-import com.depex.okeyclick.sp.adapters.ServiceHistoryItemListener;
+import com.depex.okeyclick.sp.adapters.ServiceHistoryFragmentPagerAdapter;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
-import com.depex.okeyclick.sp.modal.ServiceHistory;
-import com.google.gson.Gson;
+import com.depex.okeyclick.sp.fragment.ServiceHistoryAllServiceFragment;
+import com.depex.okeyclick.sp.fragment.ServiceHistoryCompleteFragment;
+import com.depex.okeyclick.sp.fragment.ServiceHistoryUpcomingFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,16 +34,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ServiceHistoryActivity extends AppCompatActivity implements ServiceHistoryItemListener {
+public class ServiceHistoryActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.when_no_service_history)
+   /* @BindView(R.id.when_no_service_history)
     FrameLayout whenNoServiceHistory;
 
     @BindView(R.id.recycler_service_history)
-    RecyclerView serviceHistoryRecycler;
+    RecyclerView serviceHistoryRecycler;*/
 
     SharedPreferences preferences;
+
+    @BindView(R.id.service_history_tabs)
+    TabLayout serviceHistoryTabs;
+
+    @BindView(R.id.service_history_view_pager)
+    ViewPager serviceHistoryViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +62,7 @@ public class ServiceHistoryActivity extends AppCompatActivity implements Service
 
         ButterKnife.bind(this);
 
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,11 +70,13 @@ public class ServiceHistoryActivity extends AppCompatActivity implements Service
             }
         });
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
+
+        serviceHistoryTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(serviceHistoryViewPager));
+        serviceHistoryViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(serviceHistoryTabs));
         initTaskHistory();
     }
 
     private void initTaskHistory() {
-
         JSONObject requestData=new JSONObject();
         JSONObject data=new JSONObject();
         try {
@@ -77,7 +85,7 @@ public class ServiceHistoryActivity extends AppCompatActivity implements Service
             data.put("userToken", preferences.getString("userToken", "0"));
             data.put("user_id", preferences.getString("user_id", "0"));
             requestData.put("RequestData", data);
-            Log.i("requestData", "Service History Request : "+requestData);
+            Log.i("requestData", "Service History : "+requestData.toString());
         } catch (JSONException e) {
             Log.e("responseDataError", e.toString());
         }
@@ -99,15 +107,28 @@ public class ServiceHistoryActivity extends AppCompatActivity implements Service
                             if(success){
                                 JSONObject res=resJson.getJSONObject("response");
                                 JSONArray serviceHistoryArr=res.getJSONArray("list");
-                                Gson gson=new Gson();
+                                /*Gson gson=new Gson();
                                 ServiceHistory[] arr=gson.fromJson(serviceHistoryArr.toString(), ServiceHistory[].class);
-                                List<ServiceHistory> serviceHistories=new ArrayList<>(Arrays.asList(arr));
-                                ServiceHistoryAdapter adapter=new ServiceHistoryAdapter(ServiceHistoryActivity.this, serviceHistories,ServiceHistoryActivity.this);
-                                serviceHistoryRecycler.setLayoutManager(new LinearLayoutManager(ServiceHistoryActivity.this));
-                                serviceHistoryRecycler.setAdapter(adapter);
-                                if(serviceHistories.size()>0){
-                                    whenNoServiceHistory.setVisibility(View.GONE);
-                                }
+                                List<ServiceHistory> serviceHistories=new ArrayList<>(Arrays.asList(arr));*/
+
+                                ServiceHistoryUpcomingFragment serviceHistoryUpcomingFragment=ServiceHistoryUpcomingFragment.newInstance(serviceHistoryArr.toString());
+                                ServiceHistoryCompleteFragment serviceHistoryCompleteFragment=ServiceHistoryCompleteFragment.newInstance(serviceHistoryArr.toString());
+                                ServiceHistoryAllServiceFragment serviceHistoryAllServiceFragment=ServiceHistoryAllServiceFragment.newInstance(serviceHistoryArr.toString());
+                                List<Fragment> list=new ArrayList<>();
+
+                                list.add(serviceHistoryAllServiceFragment);
+                                list.add(serviceHistoryUpcomingFragment);
+                                list.add(serviceHistoryCompleteFragment);
+
+                                ServiceHistoryFragmentPagerAdapter adapter=new ServiceHistoryFragmentPagerAdapter(getSupportFragmentManager(), list);
+                                serviceHistoryViewPager.setAdapter(adapter);
+
+                              /*  ServiceHistoryAdapter adapter=new ServiceHistoryAdapter(ServiceHistoryActivity.this, serviceHistories, ServiceHistoryActivity.this);
+                                 *//*serviceHistoryRecycler.setLayoutManager(new LinearLayoutManager(ServiceHistoryActivity.this));
+                                serviceHistoryRecycler.setAdapter(adapter);*/
+                             /*   if(serviceHistories.size()>0){
+                                    //whenNoServiceHistory.setVisibility(View.GONE);
+                                }*/
                             }
                         } catch (JSONException e) {
                             Log.e("responseDataError", "Service History : "+e.toString());
@@ -116,18 +137,8 @@ public class ServiceHistoryActivity extends AppCompatActivity implements Service
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-                        Log.e("responseData", "Service History : "+t.toString());
+                        Log.e("responseDataError", "Service History Error : "+t.toString());
                     }
                 });
-    }
-
-
-
-
-    @Override
-    public void onServiceHistoryItemClick(ServiceHistory serviceHistory) {
-        Gson gson=new Gson();
-        String serviceJson=gson.toJson(serviceHistory);
-            Log.i("responseData", "Service History Item  : "+serviceJson);
     }
 }

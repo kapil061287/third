@@ -301,13 +301,11 @@ public class PaymentConfirmActivity extends AppCompatActivity implements View.On
         rateTextView.setText(getRatingText(ratingBarBottomSheet.getRating()));
         ratingBarBottomSheet.setOnRatingBarChangeListener(this);
         rateCommentEdit=view.findViewById(R.id.write_review_edit);
-
     }
+
 
     @Override
     public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
         rateTextView.setText(getRatingText(v));
     }
-
-
 }

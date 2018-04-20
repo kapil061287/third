@@ -9,11 +9,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
 import com.depex.okeyclick.sp.R;
+import com.depex.okeyclick.sp.constants.UtilsMethods;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.depex.okeyclick.sp.api.ApiListener;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +76,7 @@ public class LoginScreenActivity extends AppCompatActivity implements View.OnCli
                 String password=passwordLogin.getEditText().getText().toString();
 
                 try{
+                    String deviceToken= FirebaseInstanceId.getInstance().getToken();
                     JSONObject requestData=new JSONObject();
                     JSONObject data=new JSONObject();
                     data.put("apikey", getString(R.string.apikey));
@@ -81,6 +86,7 @@ public class LoginScreenActivity extends AppCompatActivity implements View.OnCli
                             "82150528-23LG-4622-B303-68B4572F9305");
                     data.put("username", email);
                     data.put("password", password);
+                    data.put("device_token", deviceToken);
                     requestData.put("RequestData", data);
 
                     Retrofit.Builder builder=new Retrofit.Builder();
@@ -122,7 +128,8 @@ public class LoginScreenActivity extends AppCompatActivity implements View.OnCli
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                                t.printStackTrace();
+                            Toast.makeText(LoginScreenActivity.this, "Please Check your internet connection !", Toast.LENGTH_LONG).show();
+                            t.printStackTrace();
                         }
                     });
                 }catch (Exception e){

@@ -9,13 +9,13 @@ import android.util.Log;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
+import com.depex.okeyclick.sp.constants.UtilsMethods;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,20 +29,19 @@ public class IsTaskCancelService extends JobService {
     String channelId;
     @Override
     public boolean onStartJob(JobParameters job) {
-
         channelId="notify_chennel1";
         manager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-       NotificationCompat.Builder builder=new NotificationCompat.Builder(this, channelId);
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(this, channelId);
 
-       builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-       builder.setSmallIcon(R.drawable.logo);
-       builder.setContentText("Customer canceled the corrent task  Sorry for Inconvenience !");
-       builder.setContentTitle("Cancel Current Task ");
-      // builder.setContentIntent()
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentText("Customer canceled the corrent task  Sorry for Inconvenience !");
+        builder.setContentTitle("Cancel Current Task ");
+        // builder.setContentIntent()
 
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
-        checkServiceProviderRunningStatus();
+        checkServiceProviderRunningStatus(job);
 
         return true;
     }
@@ -53,7 +52,7 @@ public class IsTaskCancelService extends JobService {
         return true;
     }
 
-    private void checkServiceProviderRunningStatus() {
+    private void checkServiceProviderRunningStatus(final JobParameters job) {
         JSONObject requestData=new JSONObject();
         JSONObject data=new JSONObject();
         try {
@@ -92,17 +91,18 @@ public class IsTaskCancelService extends JobService {
                                 JSONObject spData=resObj.getJSONObject("sp_Data");
                                 String firstName=spData.getString("first_name");
 
-                                //String serviceName
-
                                 if(task_status!=9 ){
                                     if(preferences.getBoolean("canCancel", false)) {
-                                        checkServiceProviderRunningStatus();
+                                        checkServiceProviderRunningStatus(job);
+                                    }else {
+                                        jobFinished(job, false);
                                     }
                                 }else {
                                     //preferences.edit().putBoolean("isCancelTask", true).apply();=
                                      LocalBroadcastManager manager=LocalBroadcastManager.getInstance(IsTaskCancelService.this);
                                     Intent intent=new Intent(Utils.CANCEL_ACTION);
                                     manager.sendBroadcast(intent);
+                                    jobFinished(job, false);
                                 }
                             }
                         } catch (JSONException e) {
@@ -110,9 +110,12 @@ public class IsTaskCancelService extends JobService {
                         }
                     }
 
+
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-                        checkServiceProviderRunningStatus();
+                        if(UtilsMethods.isInternetAvailable(IsTaskCancelService.this)){
+                            checkServiceProviderRunningStatus(job);
+                        }
                         Log.i("responseDataError", t.toString());
                     }
                 });

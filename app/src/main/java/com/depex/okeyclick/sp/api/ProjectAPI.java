@@ -62,6 +62,9 @@ public interface ProjectAPI {
     @POST("running_task.php")
     Call<String> changeStatusRunningTask(@Body String body);
 
+    @POST("task_procedure.php")
+    Call<String> changeStatus(@Body String body);
+
     @POST("generate_task_invoice.php")
     Call<String> generateTaskInvoice(@Body String body);
 
@@ -85,4 +88,14 @@ public interface ProjectAPI {
 
     @POST("edit_profile.php")
     Call<String> editProfile(@Body String body);
+
+    @POST("member-ship-plan.php")
+    Call<String> getMemberShipPlan(@Query("apikey") String apikey);
+
+    @POST("confirm_available_time.php")
+    Call<String> confirmAvailableTime(@Body String body);
+
+
+    @POST("taskDetail.php")
+    Call<String> taskDetails(@Body String body);
 }

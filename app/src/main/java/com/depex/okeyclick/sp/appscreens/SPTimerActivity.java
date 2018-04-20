@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -76,7 +75,7 @@ public class SPTimerActivity extends AppCompatActivity implements View.OnClickLi
         myTask=new MyTask();
         myTask.execute();
         Typeface typeface= ResourcesCompat.getFont(this, R.font.digital);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
 
         startJob.setOnClickListener(this);
