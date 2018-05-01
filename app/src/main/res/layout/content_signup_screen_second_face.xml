@@ -122,6 +122,32 @@
             android:gravity="left|center_vertical"
             android:textSize="17dp"
             android:layout_height="@dimen/input_field_height" />
+        <EditText
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:hint="NIF No."
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:id="@+id/nif"
+            android:gravity="left|center_vertical"
+            android:textSize="17dp"
+            android:layout_height="@dimen/input_field_height" />
+        <EditText
+            android:layout_marginTop="@dimen/input_field_margin_top"
+            android:layout_width="match_parent"
+            android:hint="CIF No."
+            android:paddingLeft="@dimen/input_field_paddingLeft"
+
+            android:layout_marginRight="@dimen/right_margin_login"
+            android:layout_marginLeft="@dimen/left_margin_login"
+            android:background="@drawable/input_field_back"
+            android:id="@+id/cif"
+            android:gravity="left|center_vertical"
+            android:textSize="17dp"
+            android:layout_height="@dimen/input_field_height" />
 
         <FrameLayout
             android:layout_marginTop="@dimen/input_field_margin_top"

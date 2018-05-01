@@ -25,6 +25,7 @@ public class ActivityChoosAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<Service> services;
+    private CheckBox selectedCheckbox;
     Set<ChooseAdapterModal> adapterModals=new HashSet<>();
     Set<Integer> expandGroupId=new HashSet<>();
 
@@ -36,9 +37,9 @@ public class ActivityChoosAdapter extends BaseExpandableListAdapter {
            for(ChooseAdapterModal modal : this.adapterModals){
                Log.i("adapterModal", modal.toString());
            }
-
         }
     }
+
 
     public Set<ChooseAdapterModal> getAdapterModals() {
         return adapterModals;
@@ -116,25 +117,29 @@ public class ActivityChoosAdapter extends BaseExpandableListAdapter {
         final SubService subService=services.get(i).getSubServices().get(i1);
         final Service service=services.get(i);
         View view2=LayoutInflater.from(context).inflate(R.layout.check_box_render_for_choose_activity, viewGroup, false);
-        CheckBox checkBox=view2.findViewById(R.id.checkbox_choose_activity);
-        checkBox.setText(subService.getServiceName());
+        final CheckBox checkBox=view2.findViewById(R.id.checkbox_choose_activity);
+        checkBox.setText(subService.getSubServiceName());
         final ChooseAdapterModal modal=new ChooseAdapterModal();
         modal.setServiceId(subService.getServiceId());
         modal.setSubServiceId(subService.getId());
-        modal.setSubServiceName(subService.getServiceName());
+        modal.setSubServiceName(subService.getSubServiceName());
         modal.setServiceName(service.getServiceName());
+
         if(adapterModals.contains(modal)){
             checkBox.setChecked(true);
+            setSelectedCheckbox(checkBox);
         }
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
                 if(b){
+                    adapterModals.clear();
                     adapterModals.add(modal);
+                    setSelectedCheckbox(checkBox);
                     Log.i("viewModalIn", adapterModals.toString());
                 }else {
+                            setSelectedCheckbox(null);
                             adapterModals.remove(modal);
                     Log.i("viewModalIn", adapterModals.toString());
                 }
@@ -158,5 +163,26 @@ public class ActivityChoosAdapter extends BaseExpandableListAdapter {
     public void onGroupCollapsed(int groupPosition) {
         super.onGroupCollapsed(groupPosition);
         expandGroupId.remove(groupPosition);
+    }
+
+    public CheckBox getSelectedCheckbox() {
+        return selectedCheckbox;
+    }
+
+    public void setSelectedCheckbox(CheckBox selectedCheckbox) {
+
+        if(selectedCheckbox==null){
+            if(this.selectedCheckbox!=null){
+                this.selectedCheckbox.setChecked(false);
+            }
+            return;
+        }
+
+        if(this.selectedCheckbox!=null && this.selectedCheckbox!=selectedCheckbox ){
+            this.selectedCheckbox.setChecked(false);
+            this.selectedCheckbox=selectedCheckbox;
+        }else {
+            this.selectedCheckbox = selectedCheckbox;
+        }
     }
 }

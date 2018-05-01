@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -26,28 +27,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.depex.okeyclick.sp.GlideApp;
 import com.depex.okeyclick.sp.R;
 import com.depex.okeyclick.sp.api.ProjectAPI;
 import com.depex.okeyclick.sp.constants.Utils;
+import com.depex.okeyclick.sp.constants.UtilsMethods;
 import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.depex.okeyclick.sp.modal.TaskDetail;
-import com.depex.okeyclick.sp.services.IsTaskCancelService;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -67,12 +67,9 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.util.Date;
 import java.util.List;
 
-import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -80,7 +77,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class AcceptServiceActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
+public class AcceptServiceActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
     private static final String PAYMENT_WAIT_STR = "Wait for Payment";
     private static final String START = "start";
     private static final String ARRIVED = "Arrived";
@@ -104,8 +101,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     @BindView(R.id.imageView3)
     ImageView backgroundGray;
 
-    @BindView(R.id.not_paid_call_btn)
-    Button notPaidCallBtn;
+
 
     @BindView(R.id.reject_btn)
     Button rejectBtn;
@@ -116,8 +112,12 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     @BindView(R.id.call_to_customer)
     LinearLayout callToCustomerLayout;
 
-    @BindView(R.id.customer_call_btn)
-    Button callBtn;
+    @BindView(R.id.task_proceed_btn)
+    Button taskProceedBtn;
+
+
+    @BindView(R.id.cs_name)
+    TextView csName;
 
     Marker spMarker;
 
@@ -135,6 +135,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
     boolean isPlayerSoundOff;
 
+    @BindView(R.id.service_provider_profilelayout)
+    LinearLayout customerProfileLayout;
+
     LatLng customerLatlng;
     LocationCallback locationCallback;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -149,6 +152,39 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     boolean isTaskAccepted;
     boolean jobInProgress;
 
+    @BindView(R.id.call_btn_to_cs)
+    LinearLayout callBtnCs;
+
+    @BindView(R.id.paid_status_img)
+    ImageView paidStatusImg;
+
+    @BindView(R.id.paid_status_text)
+    TextView paidStatusTxt;
+
+    @BindView(R.id.cancel_btn)
+    LinearLayout cancelBtn;
+
+    @BindView(R.id.cancel_img)
+    ImageView cancelImg;
+
+    @BindView(R.id.cancel_text_accept_activity)
+    TextView cancelText;
+
+    @BindView(R.id.view_profile_btn)
+    LinearLayout profileBtn;
+
+    @BindView(R.id.cs_rating)
+    RatingBar csRating;
+
+    @BindView(R.id.job_id)
+    TextView jobId;
+
+    @BindView(R.id.job_amount)
+    TextView jobAmount;
+
+
+
+
 
     @Nullable
     @Override
@@ -158,7 +194,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_in_accept__service_frgment);
         mapFragment.getMapAsync(this);
-
+        cancelBtn.setOnClickListener(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         serviceName = findViewById(R.id.service_name_accept);
@@ -168,12 +204,12 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
         player=MediaPlayer.create(this, R.raw.beep);
 
-        notPaidCallBtn.setOnClickListener(this);
+
 
         registerBroadcast();
 
         rejectBtn.setOnClickListener(this);
-        callBtn.setOnClickListener(this);
+        taskProceedBtn.setOnClickListener(this);
         //View view = inflater.inflate(R.layout.content_accept_service_fragment, container, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -205,9 +241,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
         afterAcceptRequest(detail.getCsLat(), detail.getCsLng(), detail.getCsName(), detail.getCsAddress());
         if(detail.getStatus().equalsIgnoreCase("3")){
-            callBtn.setText(ARRIVED);
+            taskProceedBtn.setText(ARRIVED);
         }else if(detail.getStatus().equalsIgnoreCase("2")){
-            callBtn.setText(START);
+            taskProceedBtn.setText(START);
         }
         Log.i("responseData", "Task Details : "+detail.toJson());
     }
@@ -265,7 +301,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                 try {
                     isPaymentSucceed=preferences.getBoolean(Utils.IS_PAYMENT_SUCCEED, false);
                     if(isPaymentSucceed){
-                        callBtn.setText(START);
+                        taskProceedBtn.setText(START);
                         Log.i("trackActivity", "isPaymentSucceed true");
                     }
 
@@ -342,6 +378,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         Bundle bundle=getIntent().getExtras();
+        this.googleMap.setOnCameraIdleListener(this);
+        this.googleMap.setOnCameraMoveListener(this);
         if(bundle.getString("taskDetailsJson")!=null){
             initFromServiceHistory(bundle.getString("taskDetailsJson"));
         }
@@ -355,8 +393,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             case R.id.circularProgressBar:
                         acceptRequest();
                 break;
-            case R.id.customer_call_btn:
-                String text = callBtn.getText().toString();
+            case R.id.task_proceed_btn:
+                String text = taskProceedBtn.getText().toString();
                 Log.i("responseData", "Call Btn Text  : " + text);
                 if(text.equalsIgnoreCase(PAYMENT_WAIT_STR)){
 
@@ -374,10 +412,33 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
             case R.id.reject_btn:
                 finish();
                 break;
-            case R.id.not_paid_call_btn:
-                callToCustomer();
+
+            case R.id.cancel_btn:
+                new AlertDialog.Builder(this).setMessage("You can't cancel request after acceptance. Please wait for payment from customer side. Thank you.")
+                        .setTitle("Cancel")
+                        .setPositiveButton("OK", null)
+                        .create()
+                        .show();
                 break;
+
+            case R.id.view_profile_btn:
+
+                showProfile();
+
+                break;
+
+
         }
+    }
+
+    private void showProfile() {
+
+       /*// View view= LayoutInflater.from(this).inflate(R.layout.content_customer_profile, null, false);
+        ImageView customerPic=view.findViewById(R.id.customer_pic);
+
+        BottomSheetDialog dialog=new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.show();*/
     }
 
     private void callToCustomer() {
@@ -428,20 +489,59 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                                 preferences.edit().putString("task_id",task_id ).apply();
                                 preferences.edit().putBoolean(Utils.IS_ACCEPTED, true).apply();
                                 isTaskAccepted=true;
+
+                                jobId.setText("JOB ID : "+task_id);
+                                jobAmount.setText("Service Amount : "+getString(R.string.uro)+jsonObject.getString("total"));
+                               // jobAmount.setText();
+
+
+                                csName.setText(jsonObject.getString("customer_name"));
+                                csRating.setRating(Float.parseFloat(jsonObject.getString("rating")));
+
+
+
+
                                 afterAcceptRequest(
                                         jsonObject.getString("customer_latitude"),
                                         jsonObject.getString("customer_longitude"),
                                         jsonObject.getString("customer_name"),
                                         jsonObject.getString("customer_address"));
+                            }else {
+                                    JSONObject errorObj=res.getJSONObject("ErrorObj");
+                                    String errorCode=errorObj.getString("ErrorCode");
+                                    String msg=errorObj.getString("ErrorMsg");
+
+                                    if(errorCode.equalsIgnoreCase("106")){
+                                        AlertDialog.Builder builder1=new AlertDialog.Builder(AcceptServiceActivity.this);
+                                        builder1.setTitle("Already Accepted");
+                                        builder1.setMessage(msg);
+                                        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                finish();
+                                                if(myTask!=null){
+                                                    myTask.cancel(true);
+                                                }
+                                            }
+                                        });
+                                        builder1.create().show();
+                                    }
                             }
                         } catch (Exception e) {
                             Log.e("responseDataErrorJson","Json Error"+ e.toString());
                         }
                     }
 
+
+
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-                        Log.e("responseDataError", "Accept Request : "+t.toString());
+                        Log.e("responseDataError", "Accept Request : " + t.toString());
+                        if(UtilsMethods.isInternetAvailable(AcceptServiceActivity.this)) {
+
+                        }else {
+                            Toast.makeText(AcceptServiceActivity.this, "No Internet Connection !", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -460,8 +560,8 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         dialog=new ProgressDialog(AcceptServiceActivity.this);
         dialog.setTitle("Wating for payment...");
         if(!isPaymentSucceed) {
-            callBtn.setText(PAYMENT_WAIT_STR);
-            dialog.show();
+            taskProceedBtn.setText(PAYMENT_WAIT_STR);
+            //dialog.show();
         }
 
         player.stop();
@@ -486,8 +586,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
         setVisibility(View.GONE, progressBar, rejectBtn, backgroundGray, serviceName, serviceAddress, updateTimeText);
 
-        setVisibility(View.VISIBLE, callToCustomerLayout);
-
+        setVisibility(View.VISIBLE, customerProfileLayout, navigateBtn);
 
         customerLatlng = new LatLng(customerLat, customerLng);
         MarkerOptions options = new MarkerOptions();
@@ -648,7 +747,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                             JSONObject res=new JSONObject(responseString);
                             boolean success=res.getBoolean("successBool");
                             if(success){
-                                callBtn.setText(ARRIVED);
+                                taskProceedBtn.setText(ARRIVED);
                                 /*  if(status.equalsIgnoreCase("reached")){
                                     spTimerStart();
                                 }*/
@@ -677,6 +776,7 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
 
 
 
+
     private void spTimerStart() {
         Intent intent=new Intent(AcceptServiceActivity.this, StartJobActivity.class);
         Bundle bundle=getIntent().getExtras();
@@ -689,6 +789,18 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         finish();
     }
 
+    @Override
+    public void onCameraIdle() {
+
+        if(isTaskAccepted)
+        setVisibility(View.VISIBLE, navigateBtn,customerProfileLayout);
+    }
+
+    @Override
+    public void onCameraMove() {
+
+        setVisibility(View.GONE, navigateBtn,customerProfileLayout);
+    }
 
 
     private class MyTask extends AsyncTask<Integer, Integer, String> {
@@ -789,7 +901,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
         player.stop();
         preferences.edit().putBoolean("canCancel", false).apply();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadCastReciever);
-        myTask.cancel(true);
+        if(myTask!=null) {
+            myTask.cancel(true);
+        }
     }
 
 
@@ -834,7 +948,16 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                 }
                 if(action.equalsIgnoreCase(Utils.PAYMENT_CONFIRMATION_INTENT)){
                     //preferences.edit().putBoolean(Utils.IS_PAYMENT_SUCCEED, true).apply();
-                    dialog.dismiss();
+                    //dialog.dismiss();
+
+                    taskProceedBtn.setBackgroundColor(getResources().getColor(R.color.y_color));
+                    taskProceedBtn.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    paidStatusTxt.setText("Call");
+                    paidStatusImg.setImageResource(R.drawable.ic_call);
+
+                    cancelImg.setImageResource(R.drawable.ic_paid);
+                    cancelText.setText("Paid");
+
 
               new AlertDialog.Builder(AcceptServiceActivity.this)
                       .setTitle("Payment Comfirm")
@@ -844,8 +967,9 @@ public class AcceptServiceActivity extends AppCompatActivity implements OnMapRea
                       .show();
 
                Log.i("responseData", "Payment Process Complete");
-                callBtn.setText(START);
+                taskProceedBtn.setText(START);
                 }
+
         }
 
     };

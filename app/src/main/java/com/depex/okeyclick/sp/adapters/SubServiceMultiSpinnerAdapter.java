@@ -47,14 +47,14 @@ public class SubServiceMultiSpinnerAdapter extends BaseAdapter{
             //TextView textView=convertView.findViewById(R.id.sub_service_spinner_txt);
             //textView.setText(subCategories.get(position).getServiceName());
             CheckBox checkBox=convertView.findViewById(R.id.sub_service_spinner_txt);
-            checkBox.setText(subCategories.get(position).getServiceName());
+            checkBox.setText(subCategories.get(position).getSubServiceName());
             viewHolder.setCheckBox(checkBox);
             //viewHolder.setTextView(textView);
             convertView.setTag(viewHolder);
         }else {
             SubCategoryViewHolder viewHolder= (SubCategoryViewHolder) convertView.getTag();
             //viewHolder.getTextView().setText(subCategories.get(position).getServiceName());
-            viewHolder.getCheckBox().setText(subCategories.get(position).getServiceName());
+            viewHolder.getCheckBox().setText(subCategories.get(position).getSubServiceName());
         }
         return convertView;
     }

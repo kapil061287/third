@@ -21,6 +21,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AcceptServiceFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
@@ -29,12 +30,16 @@ public class AcceptServiceFragment extends Fragment implements OnMapReadyCallbac
     TextView updateTimeText;
     GoogleMap googleMap;
 
+    @BindView(R.id.job_id)
+    TextView jobId;
+
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view=inflater.inflate(R.layout.content_accept_service_fragment, container, false);
+
         SupportMapFragment mapFragment= (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_in_accept__service_frgment);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mapFragment.getView().setElevation(2);

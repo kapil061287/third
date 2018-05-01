@@ -24,6 +24,7 @@
         android:title="@string/term_and_condition"/>
     <item android:id="@+id/share_with_others_menu"
         android:icon="@drawable/share_icon"
+        android:visible="false"
         android:title="Share with others" />
     <item android:id="@+id/change_status_menu"
         android:title="Change Status"

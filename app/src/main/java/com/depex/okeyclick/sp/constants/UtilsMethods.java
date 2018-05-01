@@ -112,32 +112,32 @@ public class UtilsMethods {
                                         case "1":
                                             break;
                                         case "2":
-                                            bundle=new Bundle();
+                                          /*  bundle=new Bundle();
                                             bundle.putString("taskDetailsJson", jsonObject.toString());
                                             intent=new Intent(context, AcceptServiceActivity.class);
                                             intent.putExtras(bundle);
-                                            context.startActivity(intent);
+                                            context.startActivity(intent);*/
                                             break;
                                         case "3":
-                                            bundle=new Bundle();
+                                            /*bundle=new Bundle();
                                             bundle.putString("taskDetailsJson", jsonObject.toString());
                                             intent=new Intent(context, AcceptServiceActivity.class);
                                             intent.putExtras(bundle);
-                                            context.startActivity(intent);
+                                            context.startActivity(intent);*/
                                             break;
                                         case "4":
-                                            bundle=new Bundle();
+                                            /*bundle=new Bundle();
                                             bundle.putString("taskDetailsJson", jsonObject.toString());
                                             intent=new Intent(context, StartJobActivity.class);
                                             intent.putExtras(bundle);
-                                            context.startActivity(intent);
+                                            context.startActivity(intent);*/
                                             break;
                                         case "5":
-                                            bundle=new Bundle();
+                                            /*bundle=new Bundle();
                                             bundle.putString("taskDetailsJson", jsonObject.toString());
                                             intent=new Intent(context, StartJobActivity.class);
                                             intent.putExtras(bundle);
-                                            context.startActivity(intent);
+                                            context.startActivity(intent);*/
                                             break;
                                         case "6":
                                             break;

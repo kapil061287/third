@@ -227,6 +227,8 @@ public class PaymentConfirmActivity extends AppCompatActivity implements View.On
         finish();
     }
 
+
+
     private void confirmPayment() {
         JSONObject requestData=new JSONObject();
         JSONObject data=new JSONObject();
@@ -272,6 +274,8 @@ public class PaymentConfirmActivity extends AppCompatActivity implements View.On
                 });
     }
 
+
+
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Task Information");
@@ -287,6 +291,7 @@ public class PaymentConfirmActivity extends AppCompatActivity implements View.On
         dialog=builder.create();
         dialog.show();
     }
+
 
     private void showReviewRatingSheet() {
        // Toast.makeText(this, "Review Rating screen sheet " , Toast.LENGTH_LONG).show();

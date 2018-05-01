@@ -58,6 +58,7 @@ public class ServiceHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_service_history);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         toolbar.setTitle("Service History");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_color));
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);

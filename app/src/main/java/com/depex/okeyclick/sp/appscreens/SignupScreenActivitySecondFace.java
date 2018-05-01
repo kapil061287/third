@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -96,6 +97,12 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
     @BindView(R.id.term_condition_checkbox)
     CheckBox termConditionCheckbox;
 
+    @BindView(R.id.nif)
+    EditText nifNumber;
+
+    @BindView(R.id.cif)
+    EditText cifNumber;
+
     @BindView(R.id.category_sub_category)
     EditText categorySubCategory;
 
@@ -152,7 +159,7 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
 
             ArrayList<SubService> subServices=new ArrayList<>();
             SubService subService=new SubService();
-            subService.setServiceName("Sub Service");
+            subService.setSubServiceName("Sub Service");
 
 
             ArrayList<Package> packages=new ArrayList<>();
@@ -221,7 +228,7 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
 
                     final ArrayList<String> arrayList=new ArrayList<>();
                     for(SubService subService1 : subServices){
-                        arrayList.add(subService1.getServiceName());
+                        arrayList.add(subService1.getSubServiceName());
                     }
                     ArrayAdapter<String> arrayAdapter=new ArrayAdapter<>(this,
                             android.R.layout.simple_list_item_multiple_choice, arrayList);
@@ -320,6 +327,17 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
 
             case R.id.register_btn_signup:
                // Toast.makeText(this, "Button Clicked ", Toast.LENGTH_LONG).show();
+                String cifNumberStr=cifNumber.getText().toString();
+               String nifNumberStr=nifNumber.getText().toString();
+               if(TextUtils.isEmpty(nifNumberStr)){
+                   Toast.makeText(this, "Please fill nif number !", Toast.LENGTH_LONG).show();
+                   return;
+               }
+               /*if(TextUtils.isEmpty(cifNumberStr)){
+                   Toast.makeText(this, "Please fill nif number !", Toast.LENGTH_LONG).show();
+                   return;
+               }*/
+
                 if(otp_txt.getText().toString().equals(otpNumber)){
                    // Toast.makeText(this, "Successfully Verify OTP", Toast.LENGTH_LONG).show();
                     isVerifyOTP=true;
@@ -339,6 +357,7 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                     Toast.makeText(this, "Please select minimum 1 Category!",Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 if(isVerifyOTP){
                     String mobile=mobileSignup.getPhoneNumber();
 
@@ -355,6 +374,8 @@ public class SignupScreenActivitySecondFace extends AppCompatActivity implements
                             data.put("accessType", "False");
                             data.put("accessName", "Normal");
                             data.put("mobile", mobile);
+                            data.put("cif", cifNumberStr);
+                            data.put("nif", nifNumberStr);
                             data.put("category", categoryStr);
                             data.put("subcategory", categorySubStr);
                             data.put("package", packageID);

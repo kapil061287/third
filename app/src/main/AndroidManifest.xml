@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name=".launch.SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -25,16 +26,20 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.LoginScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.SignupScreenActivityFirstFace"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.SignupScreenActivitySecondFace"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.HomeActivity"
             android:label="@string/title_activity_is_online"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -67,9 +72,11 @@
             android:value="@string/google_map_api_key" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.AcceptServiceActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+
             android:name=".appscreens.SPTimerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -79,6 +86,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".appscreens.PaymentConfirmActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.ServiceHistoryActivity"
             android:label="@string/title_activity_service_history"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -86,24 +94,34 @@
         <service android:name=".services.IsTaskCancelService" />
 
         <activity
+
             android:name=".appscreens.ServiceChooseActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBarChoosActivity" />
         <activity
             android:name=".appscreens.UpgradePlanActivity"
             android:label="@string/title_activity_upgrade_plan"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".appscreens.PaymentActivity"
             android:label="@string/title_activity_payment"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.BookLaterActivity"
             android:label="@string/title_activity_book_later"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".appscreens.StartJobActivity"
             android:label="@string/title_activity_start_job"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".appscreens.WebInnerViewActivity"
+            android:label="@string/title_activity_web_inner_view"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

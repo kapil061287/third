@@ -53,6 +53,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_payment);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_color));
         preferences=getSharedPreferences(Utils.SITE_PREF, MODE_PRIVATE);
         payBtn.setOnClickListener(this);
         String json=getIntent().getExtras().getString("json");

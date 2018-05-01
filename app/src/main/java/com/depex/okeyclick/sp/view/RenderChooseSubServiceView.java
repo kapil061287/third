@@ -19,7 +19,7 @@ public class RenderChooseSubServiceView extends ViewRender<SubService>  {
     public void bindView(View v, SubService data) {
                 if(v instanceof CheckBox){
                     CheckBox checkBox= (CheckBox) v;
-                    checkBox.setText(data.getServiceName());
+                    checkBox.setText(data.getSubServiceName());
                 }
     }
 }

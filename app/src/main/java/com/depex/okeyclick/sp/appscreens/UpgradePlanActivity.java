@@ -52,6 +52,7 @@ public class UpgradePlanActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         preferences=getSharedPreferences(Utils.SITE_PREF, MODE_PRIVATE);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_color));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

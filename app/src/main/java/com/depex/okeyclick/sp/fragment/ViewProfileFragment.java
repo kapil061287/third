@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.depex.okeyclick.sp.GlideApp;
@@ -66,7 +68,7 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     Marker marker;
 
     @BindView(R.id.profile_pic)
-    RoundedImageView profilePic;
+    ImageView profilePic;
 
     @BindView(R.id.username_view_profile_fr)
     TextView userNameViewProfile;
@@ -113,7 +115,8 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     @BindView(R.id.membership)
     TextView memberShipPlan;
 
-
+    @BindView(R.id.change_status)
+    Button changeStatusBtn;
 
 
     @Nullable
@@ -121,10 +124,17 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_profile_view_fragment, container, false);
         ButterKnife.bind(this, view);
+        changeStatusBtn.setOnClickListener(this);
+
         client = LocationServices.getFusedLocationProviderClient(context);
-        Toolbar toolbar=getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().getWindow().getDecorView().findViewById(R.id.toolbar);
         toolbar.setTitle("HOME");
         preferences = context.getSharedPreferences(Utils.SITE_PREF, Context.MODE_PRIVATE);
+        if(preferences.getBoolean("isOnline", false)){
+            changeStatusBtn.setText("Off");
+        }else {
+            changeStatusBtn.setText("On");
+        }
         TextView username_text = view.findViewById(R.id.username_view_profile_fr);
         username_text.setText(preferences.getString("fullname", "SP"));
         RatingBar ratingBar = view.findViewById(R.id.star_view_profile);
@@ -138,12 +148,12 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setMemberShipPlan(String plan) {
-        switch (plan){
+        switch (plan) {
             case "Basic":
                 memberShipPlan.setText("Basic (Upgrade)");
                 break;
             case "Premium":
-                memberShipPlan.setText(plan+" (Upgrade)");
+                memberShipPlan.setText(plan + " (Upgrade)");
                 memberShipPlan.setTextColor(context.getResources().getColor(R.color.success_color));
                 break;
             case "Advance":
@@ -153,57 +163,60 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void initProfile() {
-            new Retrofit.Builder()
-                    .baseUrl(Utils.SITE_URL)
-                    .addConverterFactory(new StringConvertFactory())
-                    .build()
-                    .create(ProjectAPI.class)
-                    .getPublicProfile(getString(R.string.apikey), preferences.getString("user_id", "0"))
-                    .enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            String responseString=response.body();
-                            Log.i("responseData", "View Profile : "+responseString+"");
-                            try {
-                                JSONObject res=new JSONObject(responseString);
-                                boolean success=res.getBoolean("successBool");
-                                if(success){
-                                    JSONObject resObj=res.getJSONObject("response");
-                                    JSONObject spData=resObj.getJSONObject("List");
-                                    String totalEarning=spData.getString("total_earning");
-                                    String lastEarning=spData.getString("last_earning");
+        new Retrofit.Builder()
+                .baseUrl(Utils.SITE_URL)
+                .addConverterFactory(new StringConvertFactory())
+                .build()
+                .create(ProjectAPI.class)
+                .getPublicProfile(getString(R.string.apikey), preferences.getString("user_id", "0"))
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String responseString = response.body();
+                        Log.i("responseData", "View Profile : " + responseString + "");
+                        if (responseString == null)
+                            return;
 
-                                    if(totalEarning!=null)
-                                    totalEarningViewProfile.setText(totalEarning+" $");
-                                    else
-                                        totalEarningViewProfile.setText("0.00 $");
-                                    if(netEarning!=null)
-                                    netEarning.setText(lastEarning+" $");
-                                    else netEarning.setText("0.00 $");
-                                    GlideApp.with(context).load(spData.getString("user_images")).into(profilePic);
-                                    serviceViewProfile.setText(spData.getString("category"));
-                                    mobileViewProfile.setText(spData.getString("mobile"));
+                        try {
+                            JSONObject res = new JSONObject(responseString);
+                            boolean success = res.getBoolean("successBool");
+                            if (success) {
+                                JSONObject resObj = res.getJSONObject("response");
+                                JSONObject spData = resObj.getJSONObject("List");
+                                String totalEarning = spData.getString("total_earning");
+                                String lastEarning = spData.getString("last_earning");
 
-                                    setMemberShipPlan(spData.getString("premium_membership"));
-                                    String memberShipId=spData.getString("member_ship_id");
-                                    preferences.edit().putString("membership", spData.getString("premium_membership"))
-                                            .putString("membershipId", memberShipId).apply();
-                                    userNameViewProfile.setText(spData.getString("first_name")+" "+spData.getString("last_name"));
-                                    pricePerHour.setText(spData.getString("pac_price_per_hr")+"$ / hour");
-                                    float rating= (float) spData.getDouble("rating");
-                                    starViewProfile.setStar(3.4f);
-                                }
-                            } catch (JSONException e) {
-                               Log.e("responseDataError","View Profile Error: "+ e.toString());
+                                if (totalEarning != null)
+                                    totalEarningViewProfile.setText(getString(R.string.uro)+totalEarning);
+                                else
+                                    totalEarningViewProfile.setText(getString(R.string.uro)+"0.00");
+                                if (netEarning != null)
+                                    netEarning.setText(getString(R.string.uro)+lastEarning);
+                                else netEarning.setText(getString(R.string.uro)+"0.00");
+                                GlideApp.with(context).load(spData.getString("user_images")).circleCrop().into(profilePic);
+                                //serviceViewProfile.setText(spData.getString("category"));
+                                mobileViewProfile.setText(spData.getString("mobile"));
+
+                                setMemberShipPlan(spData.getString("premium_membership"));
+                                String memberShipId = spData.getString("member_ship_id");
+                                preferences.edit().putString("membership", spData.getString("premium_membership"))
+                                        .putString("membershipId", memberShipId).apply();
+                                userNameViewProfile.setText(new StringBuilder().append(spData.getString("first_name")).append(" ").append(spData.getString("last_name")).toString());
+                                pricePerHour.setText(new StringBuilder().append(spData.getString("pac_price_per_hr")).append("$ / hour").toString());
+                                float rating = (float) spData.getDouble("rating");
+                                starViewProfile.setStar(3.4f);
                             }
+                        } catch (JSONException e) {
+                            Log.e("responseDataError", "View Profile Error: " + e.toString());
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            initProfile();
-                                Log.e("responseDataError", "View Profile Error : "+t.toString());
-                        }
-                    });
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        initProfile();
+                        Log.e("responseDataError", "View Profile Error : " + t.toString());
+                    }
+                });
     }
 
     @Override
@@ -225,23 +238,26 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
             return;
         }
         setLocation();
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 1 :
-                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_DENIED){
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
 
-                }else {
-                   setLocation();
+                } else {
+                    setLocation();
                 }
                 break;
         }
     }
 
     void setLocation() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
         client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -274,7 +290,10 @@ public class ViewProfileFragment extends Fragment implements OnMapReadyCallback,
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.membership:
-                    startUpgradeActivity();
+                   // startUpgradeActivity();
+                break;
+            case R.id.change_status:
+                    getFragmentManager().beginTransaction().replace(R.id.container_fragement, new IsOnlineFragment()).addToBackStack(null).commit();
                 break;
         }
     }

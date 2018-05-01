@@ -5,18 +5,34 @@ import java.io.Serializable;
 
 public class SubService implements Serializable {
 
-
+    @SerializedName("service_name")
+    private String subServiceName;
     @SerializedName("id")
     private String id;
     @SerializedName("s_id")
     private String serviceId;
-    @SerializedName("service_name")
-    private String serviceName;
     @SerializedName("subcategory_image")
-    private String subCatImageUrl;
+    private String subServiceUrl;
     @SerializedName("description")
     private String description;
+    @SerializedName("min_hr_price")
+    private String min_hr_price;
+    @SerializedName("discount_price")
+    private String discount_price;
+    @SerializedName("max_limit")
+    private int maxLimit;
+    @SerializedName("service_type")
+    private String serviceType;
 
+
+
+    public String getSubServiceName() {
+        return subServiceName;
+    }
+
+    public void setSubServiceName(String subServiceName) {
+        this.subServiceName = subServiceName;
+    }
 
     public String getId() {
         return id;
@@ -34,20 +50,12 @@ public class SubService implements Serializable {
         this.serviceId = serviceId;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getSubServiceUrl() {
+        return subServiceUrl;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getSubCatImageUrl() {
-        return subCatImageUrl;
-    }
-
-    public void setSubCatImageUrl(String subCatImageUrl) {
-        this.subCatImageUrl = subCatImageUrl;
+    public void setSubServiceUrl(String subServiceUrl) {
+        this.subServiceUrl = subServiceUrl;
     }
 
     public String getDescription() {
@@ -58,6 +66,38 @@ public class SubService implements Serializable {
         this.description = description;
     }
 
+    public String getMin_hr_price() {
+        return min_hr_price;
+    }
+
+    public void setMin_hr_price(String min_hr_price) {
+        this.min_hr_price = min_hr_price;
+    }
+
+    public String getDiscount_price() {
+        return discount_price;
+    }
+
+    public void setDiscount_price(String discount_price) {
+        this.discount_price = discount_price;
+    }
+
+    public int getMaxLimit() {
+        return maxLimit;
+    }
+
+    public void setMaxLimit(int maxLimit) {
+        this.maxLimit = maxLimit;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,23 +105,36 @@ public class SubService implements Serializable {
 
         SubService that = (SubService) o;
 
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getServiceId() != null ? !getServiceId().equals(that.getServiceId()) : that.getServiceId() != null)
+        if (maxLimit != that.maxLimit) return false;
+        if (subServiceName != null ? !subServiceName.equals(that.subServiceName) : that.subServiceName != null)
             return false;
-        if (getServiceName() != null ? !getServiceName().equals(that.getServiceName()) : that.getServiceName() != null)
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (serviceId != null ? !serviceId.equals(that.serviceId) : that.serviceId != null)
             return false;
-        if (getSubCatImageUrl() != null ? !getSubCatImageUrl().equals(that.getSubCatImageUrl()) : that.getSubCatImageUrl() != null)
+        if (subServiceUrl != null ? !subServiceUrl.equals(that.subServiceUrl) : that.subServiceUrl != null)
             return false;
-        return getDescription() != null ? getDescription().equals(that.getDescription()) : that.getDescription() == null;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
+        if (min_hr_price != null ? !min_hr_price.equals(that.min_hr_price) : that.min_hr_price != null)
+            return false;
+        if (discount_price != null ? !discount_price.equals(that.discount_price) : that.discount_price != null)
+            return false;
+        return serviceType != null ? serviceType.equals(that.serviceType) : that.serviceType == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getServiceId() != null ? getServiceId().hashCode() : 0);
-        result = 31 * result + (getServiceName() != null ? getServiceName().hashCode() : 0);
-        result = 31 * result + (getSubCatImageUrl() != null ? getSubCatImageUrl().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        int result = subServiceName != null ? subServiceName.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (serviceId != null ? serviceId.hashCode() : 0);
+        result = 31 * result + (subServiceUrl != null ? subServiceUrl.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (min_hr_price != null ? min_hr_price.hashCode() : 0);
+        result = 31 * result + (discount_price != null ? discount_price.hashCode() : 0);
+        result = 31 * result + maxLimit;
+        result = 31 * result + (serviceType != null ? serviceType.hashCode() : 0);
+
+
         return result;
     }
 }

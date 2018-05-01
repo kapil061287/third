@@ -90,8 +90,11 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
+
                     JSONObject res=new JSONObject(response.body());
+
                     Log.i(TAG, "onResponse: "+res.toString());
+
                     boolean success=res.getBoolean("successBool");
                     if(!success){
                         try {

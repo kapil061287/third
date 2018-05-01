@@ -1,8 +1,16 @@
 package com.depex.okeyclick.sp.appscreens;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
@@ -71,7 +79,9 @@ public class BookLaterActivity extends AppCompatActivity implements OnMapReadyCa
         ButterKnife.bind(this);
         toolbar.setTitle("Schedule Task Info");
         setSupportActionBar(toolbar);
+
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_color));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +96,7 @@ public class BookLaterActivity extends AppCompatActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
         preferences=getSharedPreferences(Utils.SITE_PREF, MODE_PRIVATE);
         acceptBtn.setOnClickListener(this);
+        registerBroadcast();
         rejectBtn.setOnClickListener(this);
     }
 
@@ -162,5 +173,39 @@ public class BookLaterActivity extends AppCompatActivity implements OnMapReadyCa
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+    BroadcastReceiver myBroadCastReciever=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action=intent.getAction();
+            if(action.equalsIgnoreCase(Utils.PAYMENT_CONFIRMATION_INTENT)){
+                //preferences.edit().putBoolean(Utils.IS_PAYMENT_SUCCEED, true).apply();
+                //dialog.dismiss();
+
+                new AlertDialog.Builder(BookLaterActivity.this)
+                        .setTitle("Payment Comfirm")
+                        .setMessage("Payment is confirm from customer side you can proceed to job!")
+                        .setPositiveButton("OK", null)
+                        .create()
+                        .show();
+                Log.i("responseData", "Payment Process Complete");
+            }
+        }
+    };
+
+
+    private void registerBroadcast() {
+        IntentFilter filter=new IntentFilter(Utils.PAYMENT_CONFIRMATION_INTENT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(myBroadCastReciever, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadCastReciever);
     }
 }

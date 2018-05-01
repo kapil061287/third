@@ -103,6 +103,7 @@ public class ServiceChooseActivity extends AppCompatActivity {
                             activityChoosAdapter=new ActivityChoosAdapter(ServiceChooseActivity.this, services, adapterModals);
                             //activityChoosAdapter.setAdapterModals(adapterModals);
                             listView.setAdapter(activityChoosAdapter);
+                            listView.setGroupIndicator(null);
                         }
                     }
 

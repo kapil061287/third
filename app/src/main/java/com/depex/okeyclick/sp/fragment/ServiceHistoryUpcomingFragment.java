@@ -54,6 +54,7 @@ public class ServiceHistoryUpcomingFragment extends Fragment implements ServiceH
         return view;
     }
 
+
     public static ServiceHistoryUpcomingFragment newInstance(String json){
         ServiceHistoryUpcomingFragment fragment=new ServiceHistoryUpcomingFragment();
         Bundle bundle=new Bundle();
@@ -62,11 +63,14 @@ public class ServiceHistoryUpcomingFragment extends Fragment implements ServiceH
         return fragment;
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context=context;
     }
+
+
 
     @Override
     public void onServiceHistoryItemClickListener(ServiceHistory serviceHistory) {

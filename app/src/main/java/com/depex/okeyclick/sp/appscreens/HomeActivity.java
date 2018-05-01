@@ -27,6 +27,7 @@ import com.depex.okeyclick.sp.factory.StringConvertFactory;
 import com.depex.okeyclick.sp.fragment.AcceptServiceFragment;
 import com.depex.okeyclick.sp.fragment.InviteAndEarnFragment;
 import com.depex.okeyclick.sp.fragment.IsOnlineFragment;
+import com.depex.okeyclick.sp.fragment.PaymentHistoryFragment;
 import com.depex.okeyclick.sp.fragment.PublicProfileFragment;
 import com.depex.okeyclick.sp.fragment.ViewProfileFragment;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -52,6 +53,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_color));
         setSupportActionBar(toolbar);
 
         preferences=getSharedPreferences("service_pref", MODE_PRIVATE);
@@ -191,12 +193,31 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
                 break;
+            case R.id.term_and_condition_menu:
+                startWebView(getString(R.string.term_and_condition_url), "Term And Condition");
+                break;
+            case R.id.payment_history_menu:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container_fragement, new PaymentHistoryFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
         }
 
 
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void startWebView(String url, String title){
+        Intent intent=new Intent(this, WebInnerViewActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("title", title);
+        bundle.putString("url", url);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void startServiceHistoryActivity() {
